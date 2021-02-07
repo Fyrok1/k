@@ -1,0 +1,29 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+#.env.test
+
+# pm2 ecosystem
+#ecosystem.config.js
+#ecosystem.config.cjs
+
+.vscode
+
+# uploads
+uploads/*.*

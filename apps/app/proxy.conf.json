@@ -1,0 +1,11 @@
+{
+  "/api": {
+    "target": "http://localhost:1818",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/assets":{
+    "target": "http://localhost:1818",
+    "changeOrigin": true
+  }
+}
