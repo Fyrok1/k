@@ -2,12 +2,18 @@
 
 declare module "express"{
   export interface Request extends Express.Request{
-    session:any,
-    i18n:any
+    session?:{
+      ratelimitter?:{
+        count:number,
+        time:number
+      },
+      [key: string]: any
+    },
+    i18n?:any
   }
   export interface Response extends Express.Response{
     layout?:string
   }
 }
 
-export interface unasignedObject{ [key: string]: unknown }
+export interface unasignedObject{ [key: string]: any }

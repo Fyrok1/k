@@ -2,7 +2,7 @@ import { RateLimiterRedis } from "rate-limiter-flexible";
 import express from "express";
 import { redisClient } from "./redis";
 
-const duration = 10, points = 3;
+const duration = 1, points = 10;
 let rateLimiter;
 if (process.env.REDIS == "1") {
   rateLimiter = new RateLimiterRedis({
@@ -17,19 +17,40 @@ if (process.env.REDIS == "1") {
 
 
 export const RateLimiterMiddleware = (req:express.Request, res:express.Response, next:express.NextFunction) => {
-  if (process.env.REDIS == "1") {
-    rateLimiter.consume(req.session.ip)
-    .then(() => {
-      next();
-    })
-    .catch(() => {
-      res.status(400).send("Too many request")
-    });
+  if (req.url.includes('.')) {
+    next();
   }else{
-    rateLimiter(req,res,next)
+    if (process.env.REDIS == "1") {
+      rateLimiter.consume(req.session.ip)
+      .then(() => {
+        next();
+      })
+      .catch(() => {
+        res.status(429).send("Too many request")
+      });
+    }else{
+      rateLimiter(req,res,next)
+    }
   }
+  
 };
 
+export const ClearRateLimitterMiddleware = () => {
+  return async function(req,res,next) {
+    ClearRateLimitter(req).then(next)
+  }
+}
+
+export const ClearRateLimitter = async(req:express.Request) => {
+  if (process.env.REDIS == "1") {
+    redisClient.set(req.session.ip,"1")
+  }else{
+    req.session.ratelimitter = {
+      count:1,
+      time:Math.floor((new Date().getTime())/1000)
+    }
+  }
+}
 
 function sessionRateLimitter(req:express.Request, res:express.Response, next:express.NextFunction) {
   if (req.session.ratelimitter) {
@@ -43,7 +64,7 @@ function sessionRateLimitter(req:express.Request, res:express.Response, next:exp
         next();
       })
     }else if(req.session.ratelimitter.count > points){
-      res.status(400).send("Too many request")
+      res.status(429).send("Too many request")
     }else{
       req.session.ratelimitter.count +=1;
       req.session.save(()=>{

@@ -46,14 +46,7 @@ if (process.env.NODE_ENV != "production") {
       Socket.emit('refresh-page')  
     }
   })
-  fs.watch(path.join(path.resolve(),'/locales'),{recursive:true},(event,filename)=>{
-    i18next.reloadResources(supportedLanguges)
-    if (cooldown == 0) {
-      cooldown = 2
-      console.log(`LOCALES UPDATE ${filename}`);
-      Socket.emit('refresh-page')  
-    }
-  })
+ 
   fs.watch(path.join(path.resolve(),'/dist'),{recursive:true},(event,filename)=>{
     if (cooldown == 0) {
       cooldown = 2
@@ -61,7 +54,17 @@ if (process.env.NODE_ENV != "production") {
       Socket.emit('refresh-page')  
     }
   })
-  
+
+  if (process.env.MULTI_LANG == "1") {
+    fs.watch(path.join(path.resolve(),'/locales'),{recursive:true},(event,filename)=>{
+      i18next.reloadResources(supportedLanguges)
+      if (cooldown == 0) {
+        cooldown = 2
+        console.log(`LOCALES UPDATE ${filename}`);
+        Socket.emit('refresh-page')  
+      }
+    })
+  }
 }
 
 async function createRequiredDirs(arr){

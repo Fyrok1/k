@@ -112,8 +112,8 @@ export const SetLayoutMiddleware = (layout:string)=>{
   }
 }
 
-export const RenderAngularAppFile = (appName:string):express.RequestHandler=>{
-  return (req:express.Request,res:express.Response):express.RequestHandler => {
+export const RenderAngularAppFile = (appName:string)=>{
+  return async(req:express.Request,res:express.Response) => {
     res.layout = null;
     if (req.originalUrl.indexOf('.') == -1 && req.originalUrl[req.originalUrl.length-1] != "/") {
       res.redirect(req.originalUrl+'/')

@@ -6,26 +6,24 @@ import session from 'express-session';
 import hpp from 'hpp'
 import path from 'path'
 import expressLayouts from 'express-ejs-layouts'
+import cors from "cors";
 import connectSessionSequelize from 'connect-session-sequelize'
-// import connectRedis from 'connect-redis'
 import { checkConnection, sequelize } from './sequelize'
 import { v4 as uuidv4 } from 'uuid';
 import expressSitemapXml from 'express-sitemap-xml';
-// import { redisClient } from './redis'
+import connectRedis from 'connect-redis'
+import { checkRedisConnection, redisClient } from './redis'
 import cookieParser from 'cookie-parser'
 import fileUpload from 'express-fileupload'
 
 import { SiteRouter } from '../routes/site.router';
 import { gitPull } from './updateGit'
-import { RateLimiterMiddleware } from './rateLimitter';
-
-const SequelizeStore = connectSessionSequelize(session.Store);// Sequelize Session store
-// let RedisStore = connectRedis(session)
 
 import './cron'
 import { Log } from './logger';
-import { CsrfProtectionMiddleware } from './csrf';
 import { RenderMiddleware } from './render';
+import router from '../routes/router';
+import { changeLanguageMiddleware, defaultLanguage, supportedLanguges } from './language';
 
 app.enable('trust proxy')
 //app.disable('view cache');
@@ -48,14 +46,18 @@ app.use(hpp());
 app.use(express.static('./public'));
 app.use('/uploads', express.static('./uploads'));
 app.use(cookieParser(process.env.SECRET));
+app.use(cors())
 app.use(RenderMiddleware())
 app.use(checkConnection)
+app.use(checkRedisConnection)
 app.use(
   session({// express session config
     name: '_tkn',
     secret: process.env.SECRET ?? '',
-    // store:( process.env.NODE_ENV == "production" ? new RedisStore({ client: redisClient }) : new SequelizeStore({ db: sequelize, tableName:"session" })),
-    store: (new SequelizeStore({ db: sequelize, tableName:"session" })),
+    store:( 
+      process.env.REDIS == "1" ?
+      new (connectRedis(session))({ client: redisClient }): 
+      new (connectSessionSequelize(session.Store))({ db: sequelize, tableName:"session" })),
     cookie: {
       maxAge: ((1000 * 60 * 60 * 24) * 2)
     },
@@ -89,18 +91,17 @@ if (process.env.NODE_ENV == "production") {
   app.post('/gitPull', gitPull) 
 }
 
-app.use(CsrfProtectionMiddleware())
-app.use('/',RateLimiterMiddleware, SiteRouter)
 
-/* Multi language support detail in language.js
-app.get('/',(req,res)=>{
-  res.i18nRedirect('/')
-})
-supportedLanguges.forEach(lang=>{
-  app.use('/'+lang+'/',changeLanguageMiddleware(lang),SiteRouter)
-  app.use('/'+lang+'/admin',changeLanguageMiddleware(lang),AdminPanelRouter)
-})
-*/
+if (process.env.MULTI_LANG == "1") {
+  app.get('/',(req,res)=>{
+    res.redirect(`/${defaultLanguage}/`)
+  })
+  supportedLanguges.forEach(lang=>{
+    app.use('/'+lang+'/',changeLanguageMiddleware(lang),router)
+  })  
+}else{
+  app.use(router)
+}
 
 app.use(function (req, res) {
   res.status(404)
