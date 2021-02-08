@@ -1,7 +1,7 @@
 import csrf from 'csurf'
 import app from './app'
 import express from "express";
-export const csrfProtection = csrf({cookie:true})
+export const CsrfProtection = csrf({cookie:true})
 
 export const CsrfProtectionMiddleware = ():express.Handler=>{
   app.use(csrf());

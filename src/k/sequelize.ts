@@ -10,8 +10,8 @@ export let sequelizeStatus:{
   err:"Sequelize Connecting..."
 }
 
-export const checkConnection = (req:express.Request,res:express.Response,next:express.NextFunction)=>{
-  if (sequelizeStatus.status) {
+export const CheckSequelizeConnection = (req:express.Request,res:express.Response,next:express.NextFunction)=>{
+  if (process.env.DB != "1" || sequelizeStatus.status) {
     next()
   }else{
     res.render('pages/k/error',{
@@ -21,19 +21,24 @@ export const checkConnection = (req:express.Request,res:express.Response,next:ex
     })
   }
 }
-
-export const sequelize = new Sequelize({
-  username:process.env.DB_USER,
-  password:process.env.DB_PASS,
-  database:process.env.DB_NAME,
-  host: process.env.DB_HOST,
-  dialect: 'mysql',
-  models: [
-    path.join(__dirname,'../models')
-  ],
-  logging:false
-});
-check();
+export let sequelize:Sequelize = null;
+if (process.env.DB == "1") {
+  sequelize = new Sequelize({
+    username:process.env.DB_USER,
+    password:process.env.DB_PASS,
+    database:process.env.DB_NAME,
+    host: process.env.DB_HOST,
+    dialect: 'mysql',
+    models: [
+      path.join(__dirname,'../models'),
+      path.join(__dirname,'../k/models')
+    ],
+    logging:false
+  });
+  check();
+}else{
+  sequelizeStatus.err = "Sequelize disabled"
+}
 
 async function check(){
   try {

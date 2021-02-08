@@ -59,7 +59,7 @@ export function Logout(req:express.Request,auth:string):Promise<void>{
   })
 }
 
-export function checkAuthority(authorityId:number,authName:string|null=null){
+export function CheckAuthority(authorityId:number,authName:string|null=null){
   return async function(req:express.Request,res:express.Response,next:express.NextFunction):Promise<express.Handler>{
     try{
       let authorities

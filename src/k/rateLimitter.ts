@@ -1,12 +1,12 @@
 import { RateLimiterRedis } from "rate-limiter-flexible";
 import express from "express";
-import { redisClient } from "./redis";
+import { Redis } from "./redis";
 
 const duration = 1, points = 10;
 let rateLimiter;
 if (process.env.REDIS == "1") {
   rateLimiter = new RateLimiterRedis({
-    storeClient: redisClient,
+    storeClient: Redis,
     keyPrefix: 'rate-limitter',
     points: points, // 10 requests
     duration: duration, // per 1 second by IP
@@ -43,7 +43,7 @@ export const ClearRateLimitterMiddleware = () => {
 
 export const ClearRateLimitter = async(req:express.Request) => {
   if (process.env.REDIS == "1") {
-    redisClient.set(req.session.ip,"1")
+    Redis.set(req.session.ip,"1")
   }else{
     req.session.ratelimitter = {
       count:1,

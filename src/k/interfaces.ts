@@ -17,3 +17,10 @@ declare module "express"{
 }
 
 export interface unasignedObject{ [key: string]: any }
+
+
+export interface IHttpConfig {
+  headers:Object,
+  uploadFileSizeLimit:number,
+  requestSizeLimit:number
+}

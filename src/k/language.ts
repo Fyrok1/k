@@ -28,7 +28,7 @@ if (process.env.MULTI_LANG == "1") {
   i18next.reloadResources(supportedLanguges)
 }
 
-export const changeLanguageMiddleware = (lang:string)=>{
+export const ChangeLanguageMiddleware = (lang:string)=>{
   return async function(req:express.Request,res:express.Response,next:express.NextFunction):Promise<void>{
     req.i18n.changeLanguage(lang,((err:Error)=>{
       req.session.language = lang;

@@ -1,3 +1,4 @@
+// Used for Sequelize Session Storage. DO NOT DELETE
 import {Table, Column, Model, DataType} from 'sequelize-typescript';
 
 @Table({

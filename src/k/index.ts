@@ -1,18 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import fs from 'fs'
 import { Socket } from './socket'
 import 'express-async-errors'
 import { httpServer } from './app'
-import mkdirp from 'mkdirp'
 import path from 'path'
 
 // MIDDLEWARES
 import './middlewares'
 import i18next from 'i18next'
 import { supportedLanguges } from './language'
+import { createRequiredFolders } from './functions'
 
-createRequiredDirs([
+createRequiredFolders([
   "./locales",
   "./uploads",
+  "./uploads/tmp",
 ])
 
 httpServer.listen(process.env.PORT,()=>{
@@ -67,8 +69,12 @@ if (process.env.NODE_ENV != "production") {
   }
 }
 
-async function createRequiredDirs(arr){
-  arr.forEach(async(filePath) => {
-    await mkdirp.sync(filePath)
-  });
-}
+process.on('unhandledRejection', (reason:any, promise) => {
+  console.log('Unhandled Rejection at:', reason.stack || reason)
+  console.log(reason);
+  console.log(promise);
+})
+
+process.on('uncaughtException', function (error) {
+  console.log(error);
+});

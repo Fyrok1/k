@@ -1,17 +1,21 @@
-import Logs from "../models/logs.model"
+import Logs from "./models/logs.model"
+import { sequelizeStatus } from "./sequelize"
 
 export const Log = new class{
   create=(data:LogCreate={message:"",ip:"system"})=>{
     data.message = data.message ? data.message : "Default Message" 
     data.ip = data.ip ? data.ip : "System"
      
-    if (process.env.NODE_ENV == "development") {
+    if (!(process.env.DB=='1' && sequelizeStatus.status) || process.env.NODE_ENV == "development") {
       console.log(data.message)
     }
-    Logs.create({
-      message:data.message,
-      ip:data.ip
-    })
+    
+    if (process.env.DB=='1' && sequelizeStatus.status) {
+      Logs.create({
+        message:data.message,
+        ip:data.ip
+      })
+    }
   }
 } 
 

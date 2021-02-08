@@ -5,16 +5,17 @@ import simpleGit, { ResetMode } from "simple-git";
 import express from "express";
 import { Log } from "./logger";
 
+const git = simpleGit()
+
 export const gitPull = async (req:express.Request,res:express.Response):Promise<void>=>{
   const hmac = crypto.createHmac("sha1", process.env.SECRET ?? '');
   const sig  = "sha1=" + hmac.update(JSON.stringify(req.body)).digest("hex");
   const commits = req.body.head_commit.message.split("\n").length == 1 ? req.body.head_commit.message : req.body.head_commit.message.split("\n").map((el, i:number) => i !== 0 ? "                       " + el : el).join("\n");
 
   console.log(`[GIT] web hook`);
-  if (req.headers['x-github-event'] == "push" && sig == req.headers['x-hub-signature']) { 
+  if (sig == req.headers['x-hub-signature']) { 
     await git.reset(ResetMode.HARD);
     git.pull().then((value=>{
-      console.log(value);
       Log.create({message:`[GIT] pull values: ${JSON.stringify(value)}`})
       let isChange = false;
       Object.keys(value.summary).forEach((el)=>{
@@ -36,16 +37,16 @@ export const gitPull = async (req:express.Request,res:express.Response):Promise<
       if (isChange) {
         exec('npm i',(err,stdout,stderr)=>{
           Log.create({message:`[GIT] Updated with origin/master commits:${commits}`})
-          console.log("[NPM] update start");
           if (err) {
-            console.log(err);
             Log.create({message:`[GIT] Pull error: ${err}`})
           }else{
-            console.log(stdout);
-            console.log(stderr);
+            Log.create({message:stdout})
+            if (stderr) {
+              Log.create({message:stderr})
+            }
           }
+          Log.create({message:"[NPM] update finished"})
           cmd.run('pm2 restart app');
-          console.log("[NPM] update finished");
         })
       }
     })).catch(err=>{
@@ -54,4 +55,3 @@ export const gitPull = async (req:express.Request,res:express.Response):Promise<
   }
   res.sendStatus(200);
 }
-const git = simpleGit()

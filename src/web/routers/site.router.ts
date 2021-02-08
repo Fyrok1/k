@@ -1,6 +1,6 @@
-import { SiteController } from '../controllers/site.controller';
+import { SiteController } from '../../controllers/site.controller';
 import express from 'express'
-import { SetLayoutMiddleware } from '../k/render';
+import { SetLayoutMiddleware } from '../../k/render';
 const router = express.Router();
 
 export const SiteRouter = router
