@@ -26,6 +26,7 @@ import { RenderMiddleware } from './render';
 import router from '../web/router';
 import { ChangeLanguageMiddleware, defaultLanguage, supportedLanguges } from './language';
 import { HttpConfig } from '../web/http';
+import { KRenderMiddleware } from './kRender';
 
 if(process.env.NODE_ENV != "production") app.disable('view cache');
 app.enable('trust proxy')
@@ -53,6 +54,7 @@ app.use('/uploads', express.static('./uploads'));
 app.use(cookieParser(process.env.SECRET));
 app.use(cors())
 app.use(RenderMiddleware())
+app.use(KRenderMiddleware())
 app.use(CheckSequelizeConnection)
 app.use(CheckRedisConnection)
 app.use(
@@ -107,11 +109,12 @@ if (process.env.MULTI_LANG == "1") {
   app.use(router)
 }
 
-app.use(function (req, res) {
+app.use(async function (req, res:express.Response) {
   res.status(404)
   if (req.accepts('html')) {
-    res.render("pages/k/404")
-    return;
+    res.KRender.render({
+      page:'404.ejs'
+    })
   }else{
     res.send();
   }
@@ -119,15 +122,16 @@ app.use(function (req, res) {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err, req, res, next:undefined) => {
+  res.status(500)
   try{
     Log.create({ message: err, ip: req.session ? req.session.ip : undefined })
   }catch(e){
     // console.error(err);
     console.error(e);
   }
-  res.render('pages/k/error',{
-    env:process.env,
-    layout:null,
-    error:err
-  })
+  try {
+    res.KRender.error({error:err})
+  } catch (error) {
+    res.send(error)
+  }
 });

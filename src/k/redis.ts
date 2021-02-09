@@ -42,9 +42,7 @@ export const CheckRedisConnection = (req:express.Request,res:express.Response,ne
   if (process.env.REDIS != "1" || redisStatus.status) {
     next()
   }else{
-    res.render('pages/k/error',{
-      env:process.env,
-      layout:null,
+    res.KRender.error({
       error:redisStatus.err
     })
   }

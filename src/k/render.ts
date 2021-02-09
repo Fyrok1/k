@@ -5,6 +5,7 @@ import ejs from 'ejs';
 import fs from 'fs'
 import express from 'express'
 import { unasignedObject } from "./interfaces";
+import app from "./app";
 
 export const RenderGetMethods = (router:express.Router):express.Router =>{
   const _get = router.get;
@@ -17,9 +18,7 @@ export const RenderGetMethods = (router:express.Router):express.Router =>{
 export const RenderMiddleware = ()=>{
   return (req:express.Request,res:express.Response,next:express.NextFunction)=>{
     res.locals = {...(res.locals??{}),...{
-      env: {
-        NODE_ENV: process.env.NODE_ENV
-      },
+      env: process.env,
       extractScripts: true,
       extractMetas: true,
       extractStyles: true,
@@ -37,6 +36,9 @@ export const RenderMiddleware = ()=>{
         const d = {}
         Object.assign(d,res.locals,data)
         return ejs.render(fs.readFileSync(path.join(path.resolve(),'/src/views/partials/',filename+'.ejs'), 'utf-8'), d, options)
+      },
+      development:()=>{
+        return ejs.render(fs.readFileSync(path.join(path.resolve(),'/src/k/views/partials/development.ejs'), 'utf-8'), {...(res.locals??{})})
       },
       iteration:(i:number,page=1,pageSize=25)=>{
         return (i+1)+((page-1)*pageSize)
@@ -100,7 +102,23 @@ export const RenderMiddleware = ()=>{
       if (!options["layout"] && res.layout) {
         options["layout"] = res.layout;
       }
-      _render.call( this,view, options, callback );
+
+      if (process.env.NODE_ENV != "production") {
+        app.render(view, options,(err,html)=>{
+          if (err) {
+            throw err;
+          }else{
+            res.KRender.render({
+              page:"shell.ejs",
+              options:{
+                body:html
+              }
+            })
+          }
+        })
+      }else{
+        _render.call( this,view, options, callback );
+      }
     }
 
     next()

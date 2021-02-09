@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { IKRender } from "./kRender";
+
 declare module "express"{
   export interface Request extends Express.Request{
     session?:{
@@ -12,7 +14,8 @@ declare module "express"{
     i18n?:any
   }
   export interface Response extends Express.Response{
-    layout?:string
+    layout?:string,
+    KRender:IKRender
   }
 }
 

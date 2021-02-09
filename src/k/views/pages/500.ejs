@@ -26,7 +26,7 @@
 <body>
   <h1 class="banner">Something went wrong</h1>
   <div class="content">
-    <% if (env.DEBUG == 'true') { %>
+    <% if (env.DEBUG == '1') { %>
       <h3><%= error.name %> - <%= error.message %></h3>
       <div style="white-space: pre-wrap"><%= error.stack %></div>
       <script>
@@ -36,6 +36,6 @@
       <p><%- error %> </p>
     <% } %>
   </div>
-  <%- partial('k/development') %>
+  <%- development() %>
 </body>
 </html>

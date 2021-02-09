@@ -14,9 +14,7 @@ export const CheckSequelizeConnection = (req:express.Request,res:express.Respons
   if (process.env.DB != "1" || sequelizeStatus.status) {
     next()
   }else{
-    res.render('pages/k/error',{
-      env:process.env,
-      layout:null,
+    res.KRender.error({
       error:sequelizeStatus.err
     })
   }
