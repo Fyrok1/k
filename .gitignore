@@ -24,6 +24,7 @@ node_modules/
 #ecosystem.config.cjs
 
 .vscode
+dist/
 
 # uploads
 uploads/*.*

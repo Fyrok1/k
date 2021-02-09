@@ -16,6 +16,7 @@ import connectRedis from 'connect-redis'
 import { CheckRedisConnection, Redis } from './redis'
 import cookieParser from 'cookie-parser'
 import fileUpload from 'express-fileupload'
+import "./mailer";
 
 import { gitPull } from './updateGit'
 

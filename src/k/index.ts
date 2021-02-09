@@ -13,7 +13,7 @@ import { createRequiredFolders } from './functions'
 
 createRequiredFolders([
   "./locales",
-  "./uploads",
+  "./dist",
   "./uploads/tmp",
 ])
 
