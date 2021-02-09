@@ -20,6 +20,10 @@ export const Mailer = new class{
 
   async send(mail:MailOptions){
     return new Promise(async(resolve,reject)=>{
+      if (process.env.MAILER != "1") {
+        reject(new Error("Mailer disabled on .env"))
+        return;
+      }
       try {
         const info = await this.transporter.sendMail(mail)
         resolve(info)
