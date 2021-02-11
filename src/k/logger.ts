@@ -6,7 +6,7 @@ export const Log = new class{
     data.message = data.message ? data.message : "Default Message" 
     data.ip = data.ip ? data.ip : "System"
      
-    if (!(process.env.DB=='1' && sequelizeStatus.status) || process.env.NODE_ENV == "development") {
+    if (!(process.env.DB=='1' && sequelizeStatus.status)) {
       console.log(data.message)
     }
     
