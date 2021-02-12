@@ -17,59 +17,59 @@ createRequiredFolders([
   "./uploads/tmp",
 ])
 
-httpServer.listen(process.env.PORT,()=>{
-  console.log("Server on localhost:"+process.env.PORT);
+httpServer.listen(process.env.PORT, () => {
+  console.log("Server on localhost:" + process.env.PORT);
 })
 
 if (process.env.NODE_ENV != "production") {
   let cooldown = 0;
-  setInterval(()=>{
+  setInterval(() => {
     if (cooldown > 0) {
       cooldown--;
     }
-  },1000)
+  }, 1000)
 
-  fs.watch(path.join(path.resolve(),'/public'),{recursive:true},(event,filename)=>{
+  fs.watch(path.join(path.resolve(), '/public'), { recursive: true }, (event, filename) => {
     if (cooldown == 0) {
       cooldown = 2
       if (filename.endsWith('.css')) {
         console.log(`CSS UPDATE ${filename}`);
-        Socket.emit('refresh-css')  
-      }else{
+        Socket.emit('refresh-css')
+      } else {
         console.log(`PUBLIC UPDATE ${filename}`);
-        Socket.emit('refresh-page')  
+        Socket.emit('refresh-page')
       }
     }
   })
-  fs.watch(path.join(path.resolve(),'/src/views'),{recursive:true},(event,filename)=>{
+  fs.watch(path.join(path.resolve(), '/src/views'), { recursive: true }, (event, filename) => {
     if (filename.endsWith('.ejs') && cooldown == 0) {
       cooldown = 2
       console.log(`EJS UPDATE ${filename}`);
-      Socket.emit('refresh-page')  
+      Socket.emit('refresh-page')
     }
   })
- 
-  fs.watch(path.join(path.resolve(),'/dist'),{recursive:true},(event,filename)=>{
+
+  fs.watch(path.join(path.resolve(), '/dist'), { recursive: true }, (event, filename) => {
     if (cooldown == 0) {
       cooldown = 2
       console.log(`DIST UPDATE ${filename}`);
-      Socket.emit('refresh-page')  
+      Socket.emit('refresh-page')
     }
   })
 
   if (process.env.MULTI_LANG == "1") {
-    fs.watch(path.join(path.resolve(),'/locales'),{recursive:true},(event,filename)=>{
+    fs.watch(path.join(path.resolve(), '/locales'), { recursive: true }, (event, filename) => {
       i18next.reloadResources(supportedLanguges)
       if (cooldown == 0) {
         cooldown = 2
         console.log(`LOCALES UPDATE ${filename}`);
-        Socket.emit('refresh-page')  
+        Socket.emit('refresh-page')
       }
     })
   }
 }
 
-process.on('unhandledRejection', (reason:any, promise) => {
+process.on('unhandledRejection', (reason: any, promise) => {
   console.log('Unhandled Rejection at:', reason.stack || reason)
   console.log(reason);
   console.log(promise);

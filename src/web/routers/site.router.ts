@@ -6,4 +6,4 @@ const router = express.Router();
 export const SiteRouter = router
   .use(SetLayoutMiddleware('./layouts/site'))
   .use(SiteController.getLayout())
-  .get('/',SiteController.getIndex)
+  .get('/', SiteController.getIndex)

@@ -28,7 +28,7 @@ import { ChangeLanguageMiddleware, defaultLanguage, supportedLanguges } from './
 import { HttpConfig } from '../web/http';
 import { KRenderMiddleware } from './kRender';
 
-if(process.env.NODE_ENV != "production") app.disable('view cache');
+if (process.env.NODE_ENV != "production") app.disable('view cache');
 app.enable('trust proxy')
 app.set('trust proxy', true)
 app.set('layout', false)
@@ -44,9 +44,9 @@ app.use(fileUpload({
   },
   abortOnLimit: true,
 }));
-app.use(bodyParser.urlencoded({ limit: HttpConfig.requestSizeLimit+'mb', extended: true }));
-app.use(bodyParser.json({ limit: HttpConfig.requestSizeLimit+'mb' }));
-app.use(bodyParser.raw({ limit: HttpConfig.requestSizeLimit+'mb' }));
+app.use(bodyParser.urlencoded({ limit: HttpConfig.requestSizeLimit + 'mb', extended: true }));
+app.use(bodyParser.json({ limit: HttpConfig.requestSizeLimit + 'mb' }));
+app.use(bodyParser.raw({ limit: HttpConfig.requestSizeLimit + 'mb' }));
 app.use(helmet());
 app.use(hpp());
 app.use(express.static('./public'));
@@ -61,12 +61,12 @@ app.use(
   session({
     name: '_tkn',
     secret: process.env.SECRET ?? '',
-    store:( 
-      process.env.REDIS == "1" ? new (connectRedis(session))({ client: Redis }):
-      process.env.DB == "1" ? new (connectSessionSequelize(session.Store))({ db: sequelize, tableName:"session" }):
-      new (MemoryStore(session))({
-        checkPeriod:(1000*60*60*2)
-      })
+    store: (
+      process.env.REDIS == "1" ? new (connectRedis(session))({ client: Redis }) :
+        process.env.DB == "1" ? new (connectSessionSequelize(session.Store))({ db: sequelize, tableName: "session" }) :
+          new (MemoryStore(session))({
+            checkPeriod: (1000 * 60 * 60 * 2)
+          })
     ),
     cookie: {
       maxAge: ((1000 * 60 * 60 * 24) * 2)
@@ -81,7 +81,7 @@ app.use(
   })
 );
 
-app.use((req:express.Request, res:express.Response, next:express.NextFunction) => {
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
   res.set(HttpConfig.headers)
 
   req.session.ip = getIp(req);
@@ -94,43 +94,43 @@ app.use((req:express.Request, res:express.Response, next:express.NextFunction) =
 // app.use(expressSitemapXml(() => getUrls(SiteRouter), `http://${process.env.HOST}/`))
 
 // ++Router
-if (process.env.NODE_ENV == "production" && process.env.GITPULL == "1") { 
-  app.post('/gitPull', gitPull) 
+if (process.env.NODE_ENV == "production" && process.env.GITPULL == "1") {
+  app.post('/gitPull', gitPull)
 }
 
 if (process.env.MULTI_LANG == "1") {
-  app.get('/',(req,res)=>{
+  app.get('/', (req, res) => {
     res.redirect(`/${defaultLanguage}/`)
   })
-  supportedLanguges.forEach(lang=>{
-    app.use('/'+lang+'/',ChangeLanguageMiddleware(lang),router)
-  })  
-}else{
+  supportedLanguges.forEach(lang => {
+    app.use('/' + lang + '/', ChangeLanguageMiddleware(lang), router)
+  })
+} else {
   app.use(router)
 }
 
-app.use(async function (req, res:express.Response) {
+app.use(async function (req, res: express.Response) {
   res.status(404)
   if (req.accepts('html')) {
     res.KRender.render({
-      page:'404.ejs'
+      page: '404.ejs'
     })
-  }else{
+  } else {
     res.send();
   }
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err, req, res, next:undefined) => {
+app.use((err, req, res, next: undefined) => {
   res.status(500)
-  try{
+  try {
     Log.create({ message: err, ip: req.session ? req.session.ip : undefined })
-  }catch(e){
+  } catch (e) {
     // console.error(err);
     console.error(e);
   }
   try {
-    res.KRender.error({error:err})
+    res.KRender.error({ error: err })
   } catch (error) {
     res.send(error)
   }

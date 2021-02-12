@@ -41,8 +41,8 @@ export const getIp = function (req: express.Request) {
   return ip;
 }
 
-export const createRequiredFolders = async function(folderList:String[]){
-  folderList.forEach(async(folderPath) => {
+export const createRequiredFolders = async function (folderList: String[]) {
+  folderList.forEach(async (folderPath) => {
     await mkdirp.sync(folderPath)
   });
 }

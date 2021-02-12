@@ -1,41 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Error</title>
 </head>
 <style>
-  body{
-    margin:0;
+  body {
+    margin: 0;
     padding: 0;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   }
 
-  .banner{
+  .banner {
     background-color: #e64242;
     padding: 25px 15px;
     margin: 0;
     color: white;
   }
-  .content{
+
+  .content {
     padding: 15px 20px;
     color: #616161;
   }
 </style>
+
 <body>
   <h1 class="banner">Something went wrong</h1>
   <div class="content">
     <% if (env.DEBUG == '1') { %>
-      <h3><%= error.name %> - <%= error.message %></h3>
-      <div style="white-space: pre-wrap"><%= error.stack %></div>
-      <script>
-        console.error(`<%- error.stack %>`)
-      </script>
+    <h3><%= error.name %> - <%= error.message %></h3>
+    <div style="white-space: pre-wrap"><%= error.stack %></div>
+    <script>
+      console.error(`<%- error.stack %>`)
+    </script>
     <% } else { %>
-      <p><%- error %> </p>
+    <p><%- error %> </p>
     <% } %>
   </div>
   <%- development() %>
 </body>
+
 </html>

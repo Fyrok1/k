@@ -1,4 +1,4 @@
-import {Table, Column, Model, DataType} from 'sequelize-typescript';
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 import bcrypt from "bcrypt";
 
 // User.create({
@@ -11,35 +11,35 @@ import bcrypt from "bcrypt";
 @Table({
   modelName: 'User',
   tableName: 'users',
-  paranoid:true,
+  paranoid: true,
 })
-export default class User extends Model{
+export default class User extends Model {
   @Column({
-    type:DataType.STRING,
-    allowNull:false
+    type: DataType.STRING,
+    allowNull: false
   })
-  name:string
+  name: string
 
   @Column({
-    type:DataType.STRING,
-    allowNull:false
+    type: DataType.STRING,
+    allowNull: false
   })
-  email:string
+  email: string
 
   @Column({
-    type:DataType.STRING,
-    allowNull:false
+    type: DataType.STRING,
+    allowNull: false
   })
-  password:string
+  password: string
 
   @Column({
-    type:DataType.TINYINT,
-    allowNull:false,
-    defaultValue:1
+    type: DataType.TINYINT,
+    allowNull: false,
+    defaultValue: 1
   })
-  status:string
+  status: string
 
-  async validPassword(password:string):Promise<boolean> {
+  async validPassword(password: string): Promise<boolean> {
     try {
       return await bcrypt.compare(password, this.password);
     } catch (error) {

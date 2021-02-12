@@ -14,7 +14,7 @@ if (process.env.MULTI_LANG == "1") {
     .use(i18nextMiddleware.LanguageDetector)
     .init({
       backend: {
-        loadPath: path.join(path.resolve(),'/locales/{{lng}}.json'),
+        loadPath: path.join(path.resolve(), '/locales/{{lng}}.json'),
       },
       detection: {
         order: ['querystring', 'cookie'],
@@ -23,18 +23,18 @@ if (process.env.MULTI_LANG == "1") {
       fallbackLng: defaultLanguage,
       preload: supportedLanguges
     });
-  
+
   app.use(i18nextMiddleware.handle(i18next))
   i18next.reloadResources(supportedLanguges)
 }
 
-export const ChangeLanguageMiddleware = (lang:string)=>{
-  return async function(req:express.Request,res:express.Response,next:express.NextFunction):Promise<void>{
-    req.i18n.changeLanguage(lang,((err:Error)=>{
+export const ChangeLanguageMiddleware = (lang: string) => {
+  return async function (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
+    req.i18n.changeLanguage(lang, ((err: Error) => {
       req.session.language = lang;
       res.locals._language = lang;
       res.locals._languages = supportedLanguges;
-      if(err) console.log(err);
+      if (err) console.log(err);
       next()
     }))
   }

@@ -14,8 +14,8 @@ import express from 'express'
 // };
 
 // sequential processing, stops running validations chain if the previous one have failed.
-export const validate = (validations:ValidationChain[]) => {
-  return async (req:express.Request, res:express.Response, next:express.NextFunction):Promise<void> => {
+export const validate = (validations: ValidationChain[]) => {
+  return async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
     for (const validation of validations) {
       const result = await validation.run(req);
       if (!result.isEmpty()) break;
@@ -24,8 +24,8 @@ export const validate = (validations:ValidationChain[]) => {
     const errors = validationResult(req);
     if (errors.isEmpty()) {
       next();
-    }else{
-      res.status(400).send({msg:errors.array()[0].msg})
+    } else {
+      res.status(400).send({ msg: errors.array()[0].msg })
     }
   }
 };

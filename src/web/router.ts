@@ -6,5 +6,5 @@ import { SiteRouter } from './routers/site.router'
 
 export default express.Router()
   .use(CsrfProtection)
-  .use('/',RateLimiterMiddleware,SiteRouter)
-  .use('/app',RenderAngularApp('app'))
+  .use('/', RateLimiterMiddleware, SiteRouter)
+  .use('/app', RenderAngularApp('app'))
