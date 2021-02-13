@@ -1,5 +1,12 @@
 import ejs from "ejs";
 import path from "path";
+import fs from "fs";
+
+// checking custom error pages
+export const CustomErrors = {
+  '500':false && fs.existsSync(path.join(path.resolve('src/views/errors/500.ejs'))),
+  '404':false && fs.existsSync(path.join(path.resolve('src/views/errors/404.ejs'))),
+}
 
 export const KViewPath = path.join(__dirname, '/views')
 
@@ -14,6 +21,7 @@ export const KRenderMiddleware = () => {
           }
           const page = await ejs.renderFile(path.join(KViewPath, '/pages/', renderOptions.page), options)
           if (renderOptions.layout) {
+            
             const layout = await ejs.renderFile(path.join(KViewPath, '/layouts/', renderOptions.layout), { ...options, body: page })
             res.send(layout)
           } else {
@@ -49,13 +57,22 @@ export const KRenderMiddleware = () => {
         if (typeof errorOptions.error == "string") {
           errorOptions.error = new Error(errorOptions.error);
         }
-        try {
-          res.KRender.render({
-            page: '500.ejs',
-            options: errorOptions
-          })
-        } catch (error) {
-          res.send(error)
+        if (CustomErrors[500]) {
+          res.render('errors/500',{
+            layout:false,
+            ...res.locals,
+            ...errorOptions,
+          })          
+        }else{
+          try {
+            res.KRender.render({
+              page: '500.ejs',
+              layout:"shell.ejs",
+              options: errorOptions
+            })
+          } catch (error) {
+            res.send(error)
+          }
         }
       }
     };

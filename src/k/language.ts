@@ -2,6 +2,7 @@ import i18next from "i18next"
 import i18nextMiddleware from 'i18next-express-middleware'
 import Backend from 'i18next-node-fs-backend'
 import path from 'path'
+import express from 'express'
 import app from "./app"
 
 export const defaultLanguage:string = process.env.MULTI_LANG == "1" ? process.env.DEFAULT_LANG : ''
@@ -37,6 +38,21 @@ export const ChangeLanguageMiddleware = (lang: string) => {
       next()
     }))
   }
+}
+
+export const ChangeLanguage = (req:express.Request,res:express.Response,lang: string) => {
+  return new Promise((resolve,reject)=>{
+    req.i18n.changeLanguage(lang, ((err: Error) => {
+      req.session.language = lang;
+      res.locals._language = lang;
+      res.locals._languages = supportedLanguges;
+      if (err) {
+        reject(err)
+      }else{
+        resolve({})
+      }
+    }))
+  })
 }
 
 export const RedirectToMultilang = ()=>{

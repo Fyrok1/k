@@ -26,7 +26,7 @@ import { RenderMiddleware } from './render';
 import { DefaultRouter ,MultilangRouter } from '../web/router';
 import { ChangeLanguageMiddleware, RedirectToMultilang, supportedLanguges } from './language';
 import { HttpConfig } from '../web/http';
-import { KRenderMiddleware } from './kRender';
+import { CustomErrors, KRenderMiddleware } from './kRender';
 
 if (process.env.NODE_ENV != "production") app.disable('view cache');
 app.enable('trust proxy')
@@ -111,9 +111,16 @@ if (process.env.MULTI_LANG == "1") {
 app.use(async function (req, res: express.Response) {
   res.status(404)
   if (req.accepts('html')) {
-    res.KRender.render({
-      page: '404.ejs'
-    })
+    if (CustomErrors[404]) {
+      res.render('errors/404',{
+        ...res.locals
+      })        
+    }else{
+      res.KRender.render({
+        page: '404.ejs',
+        layout:"shell.ejs"
+      })
+    }
   } else {
     res.send();
   }

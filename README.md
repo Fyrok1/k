@@ -20,6 +20,7 @@ A NodeJS freamwork for develope amazing web sites.
 * Rate limitter
 * Session and Authorization
 * Fully customizable
+* Customizable Error Pages
 
 ## Development Features
 
@@ -30,8 +31,7 @@ A NodeJS freamwork for develope amazing web sites.
 
 ## ToDo
 
-* SEO friendly multi lang redirect
-* Custom error pages (4**.ejs)
+* KRender layout fix
 
 Coming Soon...
 
