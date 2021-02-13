@@ -1,5 +1,5 @@
 import express from "express";
-import { Log } from "./logger";
+import { Logger } from "./logger";
 import { unasignedObject } from "./interfaces";
 
 export function AuthGuard(auth: string, redirect: unasignedObject | string) {
@@ -45,7 +45,7 @@ export function Logout(req: express.Request, auth: string): Promise<void> {
         delete req.session.auth
       }
     } catch (error) {
-      Log.create({ message: error })
+      Logger.error(error)
       reject(error)
     } finally {
       req.session.save((err: Error) => {

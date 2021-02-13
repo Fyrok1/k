@@ -21,7 +21,7 @@ import "./mailer";
 import { gitPull } from './updateGit'
 
 import './cron'
-import { Log } from './logger';
+import { Logger } from './logger';
 import { RenderMiddleware } from './render';
 import router from '../web/router';
 import { ChangeLanguageMiddleware, defaultLanguage, supportedLanguges } from './language';
@@ -121,14 +121,9 @@ app.use(async function (req, res: express.Response) {
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-app.use((err, req, res, next: undefined) => {
+app.use((err, req, res, next) => {
   res.status(500)
-  try {
-    Log.create({ message: err, ip: req.session ? req.session.ip : undefined })
-  } catch (e) {
-    // console.error(err);
-    console.error(e);
-  }
+  Logger.error(err,{ip:req.session.ip??'SYSTEM'})
   try {
     res.KRender.error({ error: err })
   } catch (error) {

@@ -6,16 +6,17 @@ A NodeJS freamwork for develope amazing web sites.
 
 ## Features
 
-* Typescript
+* [Typescript](https://www.typescriptlang.org/)
 * [Redis](https://redis.io/) support
 * Database support with [Sequelize](https://sequelize.org/master/)
 * Database migration with [Sequelize](https://sequelize.org/master/)
 * MVC architecture
 * Multi language support with [i18next](https://www.i18next.com/)
 * [Angular](https://angular.io/) Support
-* CSRF protection
-* SCSS compailer
+* [CSRF](https://www.npmjs.com/package/csurf) protection
+* [SCSS](https://sass-lang.com/) compailer
 * Server Side Render with [EJS](https://ejs.co/)
+* Logging support with [winston](https://www.npmjs.com/package/winston)
 * Session and Authorization
 * Fully customizable
 
@@ -29,8 +30,6 @@ A NodeJS freamwork for develope amazing web sites.
 ## ToDo
 
 * SEO friendly multi lang redirect
-* Log file for DB=0
-* Add Log type (warning, info) to Log
 * Custom error pages (4**.ejs)
 
 Coming Soon...
