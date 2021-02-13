@@ -4,7 +4,9 @@ import { RateLimiterMiddleware } from '../k/rateLimitter'
 import { RenderAngularApp } from '../k/render'
 import { SiteRouter } from './routers/site.router'
 
-export default express.Router()
+export const DefaultRouter = express.Router()
   .use(CsrfProtection)
-  .use('/', RateLimiterMiddleware, SiteRouter)
   .use('/app', RenderAngularApp('app'))
+  .use('/', RateLimiterMiddleware, SiteRouter)
+
+export const MultilangRouter = express.Router()

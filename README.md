@@ -17,6 +17,7 @@ A NodeJS freamwork for develope amazing web sites.
 * [SCSS](https://sass-lang.com/) compailer
 * Server Side Render with [EJS](https://ejs.co/)
 * Logging support with [winston](https://www.npmjs.com/package/winston)
+* Rate limitter
 * Session and Authorization
 * Fully customizable
 

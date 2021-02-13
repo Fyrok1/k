@@ -23,8 +23,8 @@ import { gitPull } from './updateGit'
 import './cron'
 import { Logger } from './logger';
 import { RenderMiddleware } from './render';
-import router from '../web/router';
-import { ChangeLanguageMiddleware, defaultLanguage, supportedLanguges } from './language';
+import { DefaultRouter ,MultilangRouter } from '../web/router';
+import { ChangeLanguageMiddleware, RedirectToMultilang, supportedLanguges } from './language';
 import { HttpConfig } from '../web/http';
 import { KRenderMiddleware } from './kRender';
 
@@ -98,15 +98,14 @@ if (process.env.NODE_ENV == "production" && process.env.GITPULL == "1") {
   app.post('/gitPull', gitPull)
 }
 
+app.use(DefaultRouter)
 if (process.env.MULTI_LANG == "1") {
-  app.get('/', (req, res) => {
-    res.redirect(`/${defaultLanguage}/`)
-  })
   supportedLanguges.forEach(lang => {
-    app.use('/' + lang + '/', ChangeLanguageMiddleware(lang), router)
+    app.use('/' + lang + '/', ChangeLanguageMiddleware(lang), MultilangRouter)
   })
+  app.use(RedirectToMultilang())
 } else {
-  app.use(router)
+  app.use(MultilangRouter)
 }
 
 app.use(async function (req, res: express.Response) {
