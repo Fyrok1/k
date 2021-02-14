@@ -23,7 +23,7 @@ import { gitPull } from './updateGit'
 import './cron'
 import { Logger } from './logger';
 import { RenderMiddleware } from './render';
-import { DefaultRouter ,MultilangRouter } from '../web/router';
+import { DefaultRouter, MultilangRouter } from '../web/router';
 import { ChangeLanguageMiddleware, RedirectToMultilang, supportedLanguges } from './language';
 import { HttpConfig } from '../web/http';
 import { CustomErrors, KRenderMiddleware } from './kRender';
@@ -112,13 +112,13 @@ app.use(async function (req, res: express.Response) {
   res.status(404)
   if (req.accepts('html')) {
     if (CustomErrors[404]) {
-      res.render('errors/404',{
+      res.render('errors/404', {
         ...res.locals
-      })        
-    }else{
+      })
+    } else {
       res.KRender.render({
         page: '404.ejs',
-        layout:"shell.ejs"
+        layout: "shell.ejs"
       })
     }
   } else {
@@ -129,7 +129,7 @@ app.use(async function (req, res: express.Response) {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err, req, res, next) => {
   res.status(500)
-  Logger.error(err,{ip:req.session.ip??'SYSTEM'})
+  Logger.error(err, { ip: req.session.ip ?? 'SYSTEM' })
   try {
     res.KRender.error({ error: err })
   } catch (error) {

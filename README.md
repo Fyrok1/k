@@ -29,10 +29,6 @@ A NodeJS freamwork for develope amazing web sites.
 * On (S)CSS change page updated without page refresh
 * Build and Watch angular app and refresh pages
 
-## ToDo
-
-* KRender layout fix
-
 Coming Soon...
 
 ## For Collaboration, Questions and Ideas Mail to Me

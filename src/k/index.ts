@@ -10,6 +10,8 @@ import './middlewares'
 import i18next from 'i18next'
 import { supportedLanguges } from './language'
 import { createRequiredFolders } from './functions'
+import { CheckCustomErrors } from './kRender'
+import { Logger } from './logger'
 
 createRequiredFolders([
   "./locales",
@@ -41,8 +43,9 @@ if (process.env.NODE_ENV != "production") {
       }
     }
   })
-  fs.watch(path.join(path.resolve(), '/src/views'), { recursive: true }, (event, filename) => {
+  fs.watch(path.join(path.resolve(), '/src/views'), { recursive: true }, async (event, filename) => {
     if (filename.endsWith('.ejs') && cooldown == 0) {
+      await CheckCustomErrors();
       cooldown = 2
       console.log(`EJS UPDATE ${filename}`);
       Socket.emit('refresh-page')
@@ -70,11 +73,13 @@ if (process.env.NODE_ENV != "production") {
 }
 
 process.on('unhandledRejection', (reason: any, promise) => {
+  Logger.error('Unhandled Rejection at:', reason.stack || reason)
   console.log('Unhandled Rejection at:', reason.stack || reason)
   console.log(reason);
   console.log(promise);
 })
 
 process.on('uncaughtException', function (error) {
+  Logger.error(error)
   console.log(error);
 });

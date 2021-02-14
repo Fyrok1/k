@@ -15,7 +15,7 @@ if (process.env.REDIS == "1") {
   Redis = redis.createClient(process.env.REDISPORT ? parseInt(process.env.REDISPORT) : 6379, process.env.REDISHOST, { password: process.env.REDISPASSWORD });
   Redis.select(process.env.NODE_ENV == "production" ? 0 : 1, (err: Error) => {
     if (err) {
-      console.log(err);
+      console.error(err);
     }
   })
 
@@ -32,7 +32,7 @@ if (process.env.REDIS == "1") {
       status: true,
       err: ""
     };
-    console.log("Redis Up");
+    // console.log("Redis Up")
   });
 } else {
   redisStatus.err = "Redis disabled";

@@ -48,7 +48,7 @@ class SequelizeTransport extends Transport {
   constructor(opts) {
     super(opts);
     if (process.env.DB != "1") {
-      console.error(new Error('Sequelize Transport: DB != 1'))
+      Logger.error(new Error('Sequelize Transport: DB != 1'))
     }
     //
     // Consume any custom options here. e.g.:
@@ -80,7 +80,7 @@ class SequelizeTransport extends Transport {
         message: message,
       })
     } else {
-      console.error(new Error('Sequelize Transport: DB != 1'))
+      Logger.error(new Error('Sequelize Transport: DB != 1'))
     }
 
     // Perform the writing to the remote service

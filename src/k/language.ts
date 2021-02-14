@@ -4,9 +4,10 @@ import Backend from 'i18next-node-fs-backend'
 import path from 'path'
 import express from 'express'
 import app from "./app"
+import { Logger } from "./logger"
 
-export const defaultLanguage:string = process.env.MULTI_LANG == "1" ? process.env.DEFAULT_LANG : ''
-export const supportedLanguges:string[] = process.env.MULTI_LANG == "1" ? process.env.SUPPORTED_LANG.split(',') : []
+export const defaultLanguage: string = process.env.MULTI_LANG == "1" ? process.env.DEFAULT_LANG : ''
+export const supportedLanguges: string[] = process.env.MULTI_LANG == "1" ? process.env.SUPPORTED_LANG.split(',') : []
 
 if (process.env.MULTI_LANG == "1") {
   i18next
@@ -34,33 +35,33 @@ export const ChangeLanguageMiddleware = (lang: string) => {
       req.session.language = lang;
       res.locals._language = lang;
       res.locals._languages = supportedLanguges;
-      if (err) console.log(err);
+      if (err) Logger.error(err);
       next()
     }))
   }
 }
 
-export const ChangeLanguage = (req:express.Request,res:express.Response,lang: string) => {
-  return new Promise((resolve,reject)=>{
+export const ChangeLanguage = (req: express.Request, res: express.Response, lang: string) => {
+  return new Promise((resolve, reject) => {
     req.i18n.changeLanguage(lang, ((err: Error) => {
       req.session.language = lang;
       res.locals._language = lang;
       res.locals._languages = supportedLanguges;
       if (err) {
         reject(err)
-      }else{
+      } else {
         resolve({})
       }
     }))
   })
 }
 
-export const RedirectToMultilang = ()=>{
-  return (req,res,next)=> {
-    const splitted = req.originalUrl.split('/').filter(i=>i)
+export const RedirectToMultilang = () => {
+  return (req, res, next) => {
+    const splitted = req.originalUrl.split('/').filter(i => i)
     if (supportedLanguges.includes(splitted[0])) {
       next()
-    }else{
+    } else {
       res.redirect(`/${defaultLanguage}/${req.originalUrl.trim() != '/' ? req.originalUrl : ''}`)
     }
   }

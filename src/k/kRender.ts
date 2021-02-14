@@ -1,11 +1,19 @@
 import ejs from "ejs";
 import path from "path";
 import fs from "fs";
+import { Logger } from "./logger";
 
 // checking custom error pages
-export const CustomErrors = {
-  '500':false && fs.existsSync(path.join(path.resolve('src/views/errors/500.ejs'))),
-  '404':false && fs.existsSync(path.join(path.resolve('src/views/errors/404.ejs'))),
+export let CustomErrors: ICustomErrors = {
+  '500': fs.existsSync(path.join(path.resolve('src/views/errors/500.ejs'))),
+  '404': fs.existsSync(path.join(path.resolve('src/views/errors/404.ejs'))),
+}
+
+export const CheckCustomErrors = async () => {
+  CustomErrors = {
+    '500': fs.existsSync(path.join(path.resolve('src/views/errors/500.ejs'))),
+    '404': fs.existsSync(path.join(path.resolve('src/views/errors/404.ejs'))),
+  }
 }
 
 export const KViewPath = path.join(__dirname, '/views')
@@ -19,16 +27,18 @@ export const KRenderMiddleware = () => {
             ...(res.locals ?? {}),
             ...(renderOptions.options ?? {})
           }
+          const layout = options.layout;
+          delete options.layout
+
           const page = await ejs.renderFile(path.join(KViewPath, '/pages/', renderOptions.page), options)
-          if (renderOptions.layout) {
-            
-            const layout = await ejs.renderFile(path.join(KViewPath, '/layouts/', renderOptions.layout), { ...options, body: page })
-            res.send(layout)
+          if (layout) {
+            const layoutPage = await ejs.renderFile(path.join(KViewPath, '/layouts/', layout), { ...options, body: page })
+            res.send(layoutPage)
           } else {
             res.send(page)
           }
         } catch (error) {
-          console.error(error);
+          Logger.error(error);
           res.send(error)
         }
       },
@@ -47,7 +57,7 @@ export const KRenderMiddleware = () => {
               resolve(<string>page)
             }
           } catch (error) {
-            console.error(error);
+            Logger.error(error);
             reject(error)
           }
         })
@@ -58,16 +68,16 @@ export const KRenderMiddleware = () => {
           errorOptions.error = new Error(errorOptions.error);
         }
         if (CustomErrors[500]) {
-          res.render('errors/500',{
-            layout:false,
+          res.render('errors/500', {
+            layout: false,
             ...res.locals,
             ...errorOptions,
-          })          
-        }else{
+          })
+        } else {
           try {
             res.KRender.render({
               page: '500.ejs',
-              layout:"shell.ejs",
+              layout: "shell.ejs",
               options: errorOptions
             })
           } catch (error) {
@@ -94,4 +104,9 @@ export interface KRenderRenderOptions {
 
 export interface KRenderErrorOptions {
   error: Error | string
+}
+
+export interface ICustomErrors {
+  "500": boolean,
+  "404": boolean,
 }
