@@ -1,10 +1,8 @@
 # K
 
-## Description
+## v0.0.1 is here 🎉
 
-A NodeJS freamwork for develope amazing web sites.
-
-## Features
+## Features 🎢
 
 * [Typescript](https://www.typescriptlang.org/)
 * [Redis](https://redis.io/) support
@@ -22,12 +20,24 @@ A NodeJS freamwork for develope amazing web sites.
 * Fully customizable
 * Customizable Error Pages
 
-## Development Features
+## Development Features 🎠
 
 * Simple build and start
 * Auto refresh on changes (.ts, .ejs and public folder)
 * On (S)CSS change page updated without page refresh
 * Build and Watch angular app and refresh pages
+
+## Installation 🎟
+
+Clone with [create-clone](https://www.npmjs.com/package/create-clone)
+
+`npx create-clone github:Fyrok1/k#0.0.1 <local-folder-name>`
+
+or
+
+select branch 0.0.1, dowload reposity and unzip
+
+# Documantation
 
 Coming Soon...
 
