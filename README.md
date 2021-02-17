@@ -68,7 +68,8 @@ When multi-language support is activated, it will be used for it, otherwise it i
 
 Controllers will stored in `src/controllers` with .ts extension
 
-### Examples
+**Example**
+
 
 > Do not forget import definition
 
@@ -109,6 +110,120 @@ DefaultRouter
   .get('/',someController)
 ```
 
+## Views
+
+Views will stored in `src/views` with .ejs extension
+We have four folder
+1. Layouts
+2. Pages
+3. Partials
+3. Errors
+
+### Layouts
+
+> Default Layout is null
+
+**Example**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <%- meta %>
+  <title><%- title %></title>
+  <%- head %>
+  <%- style %>
+</head>
+<body>
+  <%- body %>
+</body>
+<%- script %>
+</html>
+```
+
+to be continued...
+
+## Models
+
+Models will stored in `src/models` with .model.ts extension
+
+For more details [sequelize-typescript](https://www.npmjs.com/package/sequelize-typescript)
+
+**Example**
+
+```ts
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import bcrypt from "bcrypt";
+
+// Example User
+// User.create({
+//   name:"Admin",
+//   email:"tahsincesur1@gmail.com",
+//   password:"123123123",
+//   status:1
+// }) 
+
+@Table({
+  modelName: 'User',
+  tableName: 'users',
+  paranoid: true,
+})
+export default class User extends Model {
+  @Column({
+    type: DataType.STRING,
+    allowNull: false
+  })
+  name: string
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false
+  })
+  email: string
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false
+  })
+  password: string
+
+  @Column({
+    type: DataType.TINYINT,
+    allowNull: false,
+    defaultValue: 1
+  })
+  status: string
+
+  async validPassword(password: string): Promise<boolean> {
+    try {
+      return await bcrypt.compare(password, this.password);
+    } catch (error) {
+      return false
+    }
+  }
+}
+
+User.beforeCreate((user:User, options) => {
+  return bcrypt.hash(user.password, 10)
+    .then(hash => {
+      user.password = hash;
+    })
+    .catch(err => { 
+      throw new Error(); 
+    });
+})
+```
+
+> **WARNING** do not touch `src/k/models` *if you do not know what to do* 
+
+# Known Issues
+
+1. Socket io usage on development with SOCKET=1
+
+# TO DO
+
+* Custom Functions will gather under K
+* Logger model relocated to models folder
 
 ## For Collaboration, Questions and Ideas Mail to Me
 [tahsin cesur](mailto:tahsincesur1@gmail.com)
