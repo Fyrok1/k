@@ -112,14 +112,34 @@ DefaultRouter
 
 ## Views
 
+Server
 Views will stored in `src/views` with .ejs extension
 We have four folder
 1. Layouts
 2. Pages
 3. Partials
-3. Errors
+4. Errors
 
-### Layouts
+## Layouts
+
+For layout support [express-ejs-layouts](https://www.npmjs.com/package/express-ejs-layouts)
+`meta`, `head`, `style` and `script` variables used for `extractStyles`, `extractMetas`, `extractScripts`. Defaults `null`
+
+**Express-ejs-layouts** options
+|Name|Default|Description|
+|-|-|-|
+|`extractMetas`|`true`|[Details](https://www.npmjs.com/package/express-ejs-layouts#meta-blocks-extraction)|
+|`extractStyles`|`true`|[Details](https://www.npmjs.com/package/express-ejs-layouts#style-blocks-extraction)|
+|`extractScripts`|`true`|[Details](https://www.npmjs.com/package/express-ejs-layouts#script-blocks-extraction)|
+
+**Layout** options
+
+|Name|Default|Description|
+|-|-|-|
+|`body`|`null`|Used for print page html|
+|`meta`|`null`|Used for print `extractMetas` value|
+|`style`|`null`|Used for print `extractStyles` value|
+|`script`|`null`|Used for print `extractScripts` value|
 
 > Default Layout is null
 
@@ -130,8 +150,6 @@ We have four folder
 <html>
 <head>
   <%- meta %>
-  <title><%- title %></title>
-  <%- head %>
   <%- style %>
 </head>
 <body>
@@ -214,7 +232,7 @@ User.beforeCreate((user:User, options) => {
 })
 ```
 
-> **WARNING** do not touch `src/k/models` *if you do not know what to do* 
+> **WARNING** *if you do not know what to do,*  do not touch `src/k/models` 
 
 # Known Issues
 
