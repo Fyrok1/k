@@ -120,7 +120,7 @@ We have four folder
 3. Partials
 4. Errors
 
-## Layouts
+### Layouts
 
 For layout support [express-ejs-layouts](https://www.npmjs.com/package/express-ejs-layouts)
 `meta`, `head`, `style` and `script` variables used for `extractStyles`, `extractMetas`, `extractScripts`. Defaults `null`
@@ -159,7 +159,29 @@ For layout support [express-ejs-layouts](https://www.npmjs.com/package/express-e
 </html>
 ```
 
-to be continued...
+### Errors
+
+Custom error pages.
+Right now only available for `404` and `500` http codes
+
+### Pages
+
+Root folder for page ejs files.
+
+Subfolders recomended for clean code.
+
+### Partials
+
+In ejs u can include ejs files like
+```html
+<%- include('../somepartial.ejs') %>
+```
+
+if partial in partials folder u can include like
+
+```html
+<%- partial('somepartial') %>
+```
 
 ## Models
 
@@ -232,7 +254,32 @@ User.beforeCreate((user:User, options) => {
 })
 ```
 
-> **WARNING** *if you do not know what to do,*  do not touch `src/k/models` 
+> **WARNING** *if you do not know what to do,*  do not touch `src/k/models`
+
+## Session
+
+U can `get` and `set` session datas like
+```ts
+req.session
+```
+
+Session stored in `Redis`, `Database` or `Memory`
+`Redis > Database > Memory`
+
+> Memory **not** recomended for production
+
+## Rate limitter
+
+Track request with `RateLimiterMiddleware` middleware.
+Add points per tracked request and store it in `redis` or `session`.
+`Redis > Session` 
+
+|Name|Default|
+|-|-|
+|Duration|1|
+|Point|10|
+
+Changeable in .env file `RATE_LIMITTER_DURATION` and `RATE_LIMITTER_POINT`
 
 # Known Issues
 
@@ -242,6 +289,8 @@ User.beforeCreate((user:User, options) => {
 
 * Custom Functions will gather under K
 * Logger model relocated to models folder
+* Microservices
+* Docker
 
 ## For Collaboration, Questions and Ideas Mail to Me
 [tahsin cesur](mailto:tahsincesur1@gmail.com)

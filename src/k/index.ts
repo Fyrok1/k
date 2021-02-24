@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import fs from 'fs'
 import { Socket } from './socket'
 import 'express-async-errors'
 import { httpServer } from './app'
 import path from 'path'
+import chokidar from 'chokidar'
 
 // MIDDLEWARES
 import './middlewares'
@@ -31,41 +31,40 @@ if (process.env.NODE_ENV != "production") {
     }
   }, 1000)
 
-  fs.watch(path.join(path.resolve(), '/public'), { recursive: true }, (event, filename) => {
+  chokidar.watch(path.join(path.resolve(), '/public')).on('all',(event,path)=>{
     if (cooldown == 0) {
       cooldown = 2
-      if (filename.endsWith('.css')) {
-        console.log(`CSS UPDATE ${filename}`);
+      if (path.endsWith('.css')) {
+        console.log(`CSS UPDATE ${path}`);
         Socket.emit('refresh-css')
       } else {
-        console.log(`PUBLIC UPDATE ${filename}`);
+        console.log(`PUBLIC UPDATE ${path}`);
         Socket.emit('refresh-page')
       }
     }
   })
-  fs.watch(path.join(path.resolve(), '/src/views'), { recursive: true }, async (event, filename) => {
-    if (filename.endsWith('.ejs') && cooldown == 0) {
+  chokidar.watch(path.join(path.resolve(), '/src/views')).on('all',async(event,path)=>{
+    if (path.endsWith('.ejs') && cooldown == 0) {
       await CheckCustomErrors();
       cooldown = 2
-      console.log(`EJS UPDATE ${filename}`);
+      console.log(`EJS UPDATE ${path}`);
       Socket.emit('refresh-page')
     }
   })
-
-  fs.watch(path.join(path.resolve(), '/dist'), { recursive: true }, (event, filename) => {
+  chokidar.watch(path.join(path.resolve(), '/dist')).on('all',async(event,path)=>{
     if (cooldown == 0) {
       cooldown = 2
-      console.log(`DIST UPDATE ${filename}`);
+      console.log(`DIST UPDATE ${path}`);
       Socket.emit('refresh-page')
     }
   })
 
   if (process.env.MULTI_LANG == "1") {
-    fs.watch(path.join(path.resolve(), '/locales'), { recursive: true }, (event, filename) => {
+    chokidar.watch(path.join(path.resolve(), '/locales')).on('all',async(event,path)=>{
       i18next.reloadResources(supportedLanguges)
       if (cooldown == 0) {
         cooldown = 2
-        console.log(`LOCALES UPDATE ${filename}`);
+        console.log(`LOCALES UPDATE ${path}`);
         Socket.emit('refresh-page')
       }
     })

@@ -2,7 +2,7 @@ import { RateLimiterRedis } from "rate-limiter-flexible";
 import express from "express";
 import { Redis } from "./redis";
 
-const duration = 1, points = 10;
+const duration = Number(process.env.RATE_LIMITTER_DURATION)??1, points = Number(process.env.RATE_LIMITTER_POINT)??10;
 let rateLimiter;
 if (process.env.REDIS == "1") {
   rateLimiter = new RateLimiterRedis({
