@@ -27,10 +27,31 @@ export const KRenderMiddleware = () => {
             ...(res.locals ?? {}),
             ...(renderOptions.options ?? {})
           }
-          const layout = options.layout;
+          const layout = renderOptions.layout ?? options.layout;
           delete options.layout
 
           const page = await ejs.renderFile(path.join(KViewPath, '/pages/', renderOptions.page), options)
+          if (layout) {
+            const layoutPage = await ejs.renderFile(path.join(KViewPath, '/layouts/', layout), { ...options, body: page })
+            res.send(layoutPage)
+          } else {
+            res.send(page)
+          }
+        } catch (error) {
+          Logger.error(error);
+          res.send(error)
+        }
+      },
+      async renderHTML(renderOptions: KRenderRenderHTMLOptions) {
+        try {
+          const options = {
+            ...(res.locals ?? {}),
+            ...(renderOptions.options ?? {})
+          }
+          const layout = renderOptions.layout ?? options.layout;
+          delete options.layout
+
+          const page = renderOptions.html;
           if (layout) {
             const layoutPage = await ejs.renderFile(path.join(KViewPath, '/layouts/', layout), { ...options, body: page })
             res.send(layoutPage)
@@ -92,12 +113,19 @@ export const KRenderMiddleware = () => {
 
 export interface IKRender {
   render: (renderOptions: KRenderRenderOptions) => void,
+  renderHTML: (renderOptions: KRenderRenderHTMLOptions) => void,
   error: (errorOptions: KRenderErrorOptions) => void,
   renderNotSend: (renderOptions: KRenderRenderOptions) => Promise<string>
 }
 
 export interface KRenderRenderOptions {
   page: string,
+  layout?: string,
+  options?: object,
+}
+
+export interface KRenderRenderHTMLOptions {
+  html: string,
   layout?: string,
   options?: object,
 }

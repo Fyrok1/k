@@ -144,8 +144,10 @@ export const SetLayoutMiddleware = (layout: string) => {
 export const RenderAngularAppFile = (appName: string) => {
   return async (req: express.Request, res: express.Response) => {
     res.layout = null;
-    if (req.originalUrl.indexOf('.') == -1 && req.originalUrl[req.originalUrl.length - 1] != "/") {
-      res.redirect(req.originalUrl + '/')
+    let url = req.originalUrl.split('?')[0].trim();
+    
+    if (url.indexOf('.') == -1 && url[url.length - 1] != "/") {
+      res.redirect(url + '/')
     } else if (req.url == `/`) {
       const filePath = path.join(path.resolve(), 'dist/' + appName + '/index.html')
       if (fs.existsSync(filePath)) {
@@ -153,17 +155,19 @@ export const RenderAngularAppFile = (appName: string) => {
           res.sendFile(filePath)
         } else {
           const body = fs.readFileSync(filePath, "utf-8")
-          res.render('layouts/k/app-shell', {
-            body
+          res.KRender.renderHTML({
+            html: body,
+            layout:"app-shell.ejs"
           })
         }
       } else {
         res.status(404).send()
       }
     } else {
-      const filePath = path.join(path.resolve(), 'dist/' + appName + '/' + req.url);
+      url = req.url.split('?')[0].trim();
+      const filePath = path.join(path.resolve(), 'dist/' + appName + '/' + url);
       if (fs.existsSync(filePath)) {
-        res.sendFile(path.join(path.resolve(), 'dist/' + appName + '/' + req.url))
+        res.sendFile(path.join(path.resolve(), 'dist/' + appName + '/' + url))
       } else {
         res.status(404).send()
       }
