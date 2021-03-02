@@ -281,6 +281,10 @@ Add points per tracked request and store it in `redis` or `session`.
 
 Changeable in .env file `RATE_LIMITTER_DURATION` and `RATE_LIMITTER_POINT`
 
+## Logger
+
+...
+
 # Known Issues
 
 1. Socket io usage on development with SOCKET=1
@@ -288,9 +292,8 @@ Changeable in .env file `RATE_LIMITTER_DURATION` and `RATE_LIMITTER_POINT`
 # TO DO
 
 * Custom Functions will gather under K
-* Logger model relocated to models folder
 * Microservices
-* Docker
+* Docker support
 
 ## For Collaboration, Questions and Ideas Mail to Me
 [tahsin cesur](mailto:tahsincesur1@gmail.com)
