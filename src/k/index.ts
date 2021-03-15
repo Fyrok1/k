@@ -71,6 +71,7 @@ if (process.env.NODE_ENV != "production") {
   }
 }
 
+
 process.on('unhandledRejection', (reason: any, promise) => {
   Logger.error('Unhandled Rejection at:', reason.stack || reason)
   console.log('Unhandled Rejection at:', reason.stack || reason)

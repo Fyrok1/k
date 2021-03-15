@@ -254,13 +254,13 @@ User.beforeCreate((user:User, options) => {
 })
 ```
 
-> **WARNING** *if you do not know what to do,*  do not touch `src/k/models`
+> **WARNING** *if you do not know what to do,* do not touch `src/k/models`
 
 ## Session
 
-U can `get` and `set` session datas like
+U can `get` and `set` session properties like
 ```ts
-req.session
+req.session.example = 'example'
 ```
 
 Session stored in `Redis`, `Database` or `Memory`
@@ -292,8 +292,8 @@ Changeable in .env file `RATE_LIMITTER_DURATION` and `RATE_LIMITTER_POINT`
 # TO DO
 
 * Custom Functions will gather under K
+* Hiding some K features
 * Microservices
-* Docker support
 
 ## For Collaboration, Questions and Ideas Mail to Me
 [tahsin cesur](mailto:tahsincesur1@gmail.com)
