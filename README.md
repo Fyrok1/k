@@ -1,7 +1,5 @@
 # K
 
-## v0.0.1 is here 🎉
-
 ## Features 🎢
 
 * [Typescript](https://www.typescriptlang.org/)
@@ -30,15 +28,11 @@
 
 ## Installation 🎟
 
-Clone with [create-clone](https://www.npmjs.com/package/create-clone)
+```
+k-cli start <app-name>
+```
 
-`
-npx create-clone github:Fyrok1/k#0.0.1 <local-folder-name>
-`
-
-or
-
-select branch 0.0.1, dowload reposity and unzip
+For more information [k-cli](https://github.com/Fyrok1/k-cli)
 
 # Documantation
 
@@ -62,14 +56,43 @@ Could used for all routes and entegrate other routes
 
 When multi-language support is activated, it will be used for it, otherwise it is no different from DefaultRouter.
 
-> If you want to separate the route files, you can keep them in `src/web/routers` folder with .ts extension
+```ts
+export const DefaultRouter = express.Router()
+  .use(CsrfProtection) // Csrf Protection
+  .use('/app', RenderAngularApp('hello-world')) // Angular App Usage. 'hello-world' is name of angular app folder
+  .use('/', RateLimiterMiddleware, SiteRouter) // Simple Router Usage
+
+// Look for Documantation for more information https://github.com/Fyrok1/k
+export const MultilangRouter = express.Router()
+```
+
+> If you want to separate the route files, you can keep them in `src/web/routers` folder with .router.ts extension
+
+**Separate Router Example**
+
+```ts
+// src/web/routers/site.router.ts
+export const SiteRouter = router
+  .use(SetLayoutMiddleware('./layouts/site'))
+  .use(SiteController.getLayout())
+  .get('/', SiteController.getIndex)
+```
+
+**Create With k-cli**
+```
+k-cli generate router <router-name>
+```
 
 ## Controllers
 
-Controllers will stored in `src/controllers` with .ts extension
+Controllers will stored in `src/controllers` with .controller.ts extension
+
+**Create With k-cli**
+```
+k-cli generate controller <router-name>
+```
 
 **Example**
-
 
 > Do not forget import definition
 
@@ -123,7 +146,6 @@ We have four folder
 ### Layouts
 
 For layout support [express-ejs-layouts](https://www.npmjs.com/package/express-ejs-layouts)
-`meta`, `head`, `style` and `script` variables used for `extractStyles`, `extractMetas`, `extractScripts`. Defaults `null`
 
 **Express-ejs-layouts** options
 |Name|Default|Description|
@@ -143,7 +165,12 @@ For layout support [express-ejs-layouts](https://www.npmjs.com/package/express-e
 
 > Default Layout is null
 
-**Example**
+You Can Set Layout for Router with 
+```ts
+.use(SetLayoutMiddleware('./layouts/site')) // 'site' is name of .ejs file
+```
+
+**Layout Example**
 
 ```html
 <!DOCTYPE html>
@@ -161,8 +188,11 @@ For layout support [express-ejs-layouts](https://www.npmjs.com/package/express-e
 
 ### Errors
 
-Custom error pages.
+Stored in `src/views/errors`
+
 Right now only available for `404` and `500` http codes
+
+> Default pages stored in `src/k/views/pages` **Do not change this files**
 
 ### Pages
 
@@ -258,32 +288,66 @@ User.beforeCreate((user:User, options) => {
 
 ## Session
 
-U can `get` and `set` session properties like
+You can `get` and `set` session properties like
 ```ts
 req.session.example = 'example'
 ```
 
 Session stored in `Redis`, `Database` or `Memory`
-`Redis > Database > Memory`
-
-> Memory **not** recomended for production
+> Priority is `Redis > Database > Memory` **Memory not recomended for production
 
 ## Rate limitter
 
 Track request with `RateLimiterMiddleware` middleware.
 Add points per tracked request and store it in `redis` or `session`.
-`Redis > Session` 
+> Priority `Redis > Session` 
 
-|Name|Default|
-|-|-|
-|Duration|1|
-|Point|10|
+|Name|Default|Description|
+|-|-|-|
+|Duration|1|Stored For 1 second|
+|Point|10|Max request count in duration|
 
-Changeable in .env file `RATE_LIMITTER_DURATION` and `RATE_LIMITTER_POINT`
+> Changeable in .env file `RATE_LIMITTER_DURATION` and `RATE_LIMITTER_POINT`
 
 ## Logger
 
-...
+Using [winston-typescript](https://www.npmjs.com/package/winston) for logging
+
+Logs will stored in **.log** file or in **DB** if **available** in .env
+> Priority `DB > .log`
+
+.log file location is **`<root>/log/output/combined.log`**
+**Error logs stored in error.log file to**
+
+**Usage Example**
+
+```ts
+import { Logger } from "src/k/logger";
+
+Logger.info("Info log")
+Logger.error("Error log")
+Logger.warn("Warn log")
+```
+
+> In Development, Logs not gonna stored in DB or .log file, only showing in console
+
+# Angular Support
+
+> Tested on `Angular CLI: 11.2.5`
+
+## Usage
+
+1. Create an angular app using `ng new <app-name>` in `apps/` folder.
+1. Set `outputPath:"../../dist/<app-name>"` in `angular.json`
+1. Set `baseHref:""` in `angular.json`
+1. You have to use angular router and set `useHash:true`
+1. Add `"app-<app-name>":"cd dist/<app-name> && npm build --watch"` to `<root>/package.json` scripts
+1. Add angular app to a router like below
+```ts
+  .use('/app', RenderAngularApp('hello-world'))
+```
+
+> You can use `ng serve` for development but you may encounter some problems mostly about url
 
 # Known Issues
 
@@ -292,8 +356,9 @@ Changeable in .env file `RATE_LIMITTER_DURATION` and `RATE_LIMITTER_POINT`
 # TO DO
 
 * Custom Functions will gather under K
-* Hiding some K features
 * Microservices
 
+> **Tested on Ubuntu 20.04 and Windows 10**
+
 ## For Collaboration, Questions and Ideas Mail to Me
-[tahsin cesur](mailto:tahsincesur1@gmail.com)
+[tahsincesur1@gmail.com](mailto:tahsincesur1@gmail.com)
