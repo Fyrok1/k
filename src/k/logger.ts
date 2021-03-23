@@ -63,4 +63,4 @@ if (process.env.NODE_ENV != 'production') {
     Logger.add(new winston.transports.File({ filename: 'log/output/combined.log' }));
     Logger.add(new winston.transports.File({ filename: 'log/output/error.log', level: 'error' }));
   }
-} 
+}
