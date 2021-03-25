@@ -357,6 +357,7 @@ Logger.warn("Warn log")
 
 * Custom Functions will gather under K
 * Microservices
+* Tailwind Support
 
 > **Tested on Ubuntu 20.04 and Windows 10**
 
