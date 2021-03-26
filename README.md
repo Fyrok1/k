@@ -143,6 +143,8 @@ We have four folder
 3. Partials
 4. Errors
 
+> **Build do not include views and other ejs files do not delete src folder on production**
+
 ### Layouts
 
 For layout support [express-ejs-layouts](https://www.npmjs.com/package/express-ejs-layouts)
@@ -357,7 +359,6 @@ Logger.warn("Warn log")
 
 * Custom Functions will gather under K
 * Microservices
-* Tailwind Support
 
 > **Tested on Ubuntu 20.04 and Windows 10**
 

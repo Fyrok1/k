@@ -16,7 +16,7 @@ export const CheckCustomErrors = async () => {
   }
 }
 
-export const KViewPath = path.join(__dirname, '/views')
+export const KViewPath = path.join(path.resolve(), '/src/k/views')
 
 export const KRenderMiddleware = () => {
   return function (req, res, next) {
