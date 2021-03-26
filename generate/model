@@ -1,0 +1,9 @@
+import { Table, Model } from 'sequelize-typescript';
+
+@Table({
+  modelName: '$nameUpperCase$',
+  tableName: '$name$'
+})
+export default class $user$ extends Model {
+
+}

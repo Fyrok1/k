@@ -1,7 +1,7 @@
 import express from 'express'
 
-export const $name$Controller = new class{
+export const $nameUpperCase$Controller = new class{
   get(req:express.Request,res:express.Response){
-    res.send('$name$ Controller Get')
+    res.send('$nameUpperCase$ Controller Get')
   }
 }
