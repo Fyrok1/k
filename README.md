@@ -335,6 +335,8 @@ Logger.warn("Warn log")
 
 # Angular Support
 
+`k-cli new <projectName>` comes with an hello world app in apps folder.
+
 > Tested on `Angular CLI: 11.2.5`
 
 ## Usage

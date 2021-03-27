@@ -1,4 +1,30 @@
 <% if(env.NODE_ENV != 'production'){ %>
 <script src="/socket.io/socket.io.js"></script>
-<script src="/assets/scripts/development.js"></script>
+<script>
+  refreshCSS = () => { 
+    const links = document.getElementsByTagName('link'); 
+    for (let i = 0; i < links.length; i++) { 
+      if (!links[i].hasAttribute('not-reload') && links[i].getAttribute('rel') == 'stylesheet' && links[i].getAttribute('href')) { 
+        const href = links[i].getAttribute('href').split('?')[0]; 
+        const newHref = href + '?version=' + new Date().getMilliseconds(); 
+        links[i].setAttribute('href', newHref); 
+      } 
+    } 
+  }
+
+  window.onload = ()=>{
+    //setInterval(refreshCSS,1000)
+  }   
+  var socket = io();
+  socket.on('refresh-css',()=>{
+    console.log("CSS Updated");
+    refreshCSS()
+  })
+
+  socket.on('refresh-page',()=>{
+    setTimeout(() => {
+      location.reload()
+    }, 1000);
+  })
+</script>
 <% } %>
