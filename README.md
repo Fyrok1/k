@@ -135,7 +135,8 @@ DefaultRouter
 
 ## Views
 
-Server
+> Right know only **ejs** supported
+
 Views will stored in `src/views` with .ejs extension
 We have four folder
 1. Layouts
