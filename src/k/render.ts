@@ -38,8 +38,12 @@ export const RenderMiddleware = () => {
           Object.assign(d, res.locals, data)
           return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/views/partials/', filename + '.ejs'), 'utf-8'), d, options)
         },
-        development: () => {
-          return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/k/views/partials/development.ejs'), 'utf-8'), { ...(res.locals ?? {}) })
+        development: (type='classic') => {
+          if (type == 'angular') {
+            return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/k/views/partials/angular-development.ejs'), 'utf-8'), { ...(res.locals ?? {}) })            
+          }else{
+            return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/k/views/partials/development.ejs'), 'utf-8'), { ...(res.locals ?? {}) })
+          }
         },
         iteration: (i: number, page = 1, pageSize = 25) => {
           return (i + 1) + ((page - 1) * pageSize)
