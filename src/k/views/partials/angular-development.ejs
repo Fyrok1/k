@@ -11,10 +11,6 @@
       } 
     } 
   }
-
-  window.onload = ()=>{
-    //setInterval(refreshCSS,1000)
-  }   
   var socket = io();
   socket.on('refresh-css',()=>{
     console.log("CSS Updated");
