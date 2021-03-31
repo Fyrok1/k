@@ -353,10 +353,6 @@ Logger.warn("Warn log")
 
 > You can use `ng serve` for development but you may encounter some problems mostly about url
 
-# Known Issues
-
-1. Socket io usage on development with SOCKET=1
-
 # TO DO
 
 * Custom Functions will gather under K
