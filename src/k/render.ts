@@ -104,22 +104,20 @@ export const RenderMiddleware = () => {
     }
 
     const _render = res.render;
-    res.render = function (view: string, options: object = {}, callback?: (err: Error, html: string) => void) {
+    res.render = async function (view: string, options: object = {}, callback?: (err: Error, html: string) => void) {
       if (!options["layout"] && res.layout) {
         options["layout"] = res.layout;
       }
 
       if (process.env.NODE_ENV != "production") {
-        app.render(view, options, (err, html) => {
-          if (err) {
-            throw err;
-          } else {
-            res.KRender.render({
-              page: "shell.ejs",
-              options: {
-                body: html
-              }
-            })
+        const page = await res.KRender.appRender({
+          ...options,
+          page:view
+        })
+        res.KRender.render({
+          page: "shell.ejs",
+          options: {
+            body: page
           }
         })
       } else {
