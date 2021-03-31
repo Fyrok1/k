@@ -332,7 +332,20 @@ Logger.error("Error log")
 Logger.warn("Warn log")
 ```
 
-> In Development, Logs not gonna stored in DB or .log file, only showing in console
+> In Development, Logs not gonna stored in DB or .log file, only print to console
+
+# Authentication
+
+## Login
+
+
+## Logout
+
+
+## Guard
+
+
+## Authorization
 
 # Angular Support
 

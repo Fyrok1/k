@@ -5,7 +5,6 @@ import ejs from 'ejs';
 import fs from 'fs'
 import express from 'express'
 import { unasignedObject } from "./interfaces";
-import app from "./app";
 
 export const RenderGetMethods = (router: express.Router): express.Router => {
   const _get = router.get;
