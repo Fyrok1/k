@@ -40,9 +40,9 @@ For more information [k-cli](https://github.com/Fyrok1/k-cli)
 
 you could access default express app with 
 
-`
+```ts
 import app from 'src/k/app'
-`
+```
 
 ## Routing
 
