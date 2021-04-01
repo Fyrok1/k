@@ -2,9 +2,9 @@ import express from "express";
 import { Logger } from "./logger";
 import { unasignedObject } from "./interfaces";
 
-export function AuthGuard(redirect: unasignedObject | string, auth: string = "user") {
+export function AuthGuard(redirect: unasignedObject | string, authName: string = "user") {
   return async function (req: express.Request, res: express.Response, next: express.NextFunction): Promise<express.Handler> {
-    if (req.session.auth && req.session.auth[auth]) {
+    if (req.session.auth && req.session.auth[authName]) {
       next();
     } else {
       if (typeof redirect == "string") {

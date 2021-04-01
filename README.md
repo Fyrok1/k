@@ -338,14 +338,67 @@ Logger.warn("Warn log")
 
 ## Login
 
+```ts
+import { Login } from 'src/k/authGuard'
+
+Login(req: express.Request, authName:string="user", auth:object={} ):Promise<void>
+```
+
+|Paramater|Description|Default|
+|-|-|-|
+|req|express.Request||
+|authName|identifier for multiple login|"user"|
+|auth|identifier values ex:user id|{}|
+
+stores session variables under `req.session.auth[authName]`
 
 ## Logout
 
+```ts
+import { Logout } from 'src/k/authGuard'
+
+Logout(req: express.Request, authName: string = 'user'): Promise<void>
+```
+
+|Paramater|Description|Default|
+|-|-|-|
+|req|express.Request||
+|authName|identifier for multiple login|"user"|
+
+clear session variables under `req.session.auth[authName]`
 
 ## Guard
 
+Redirect unauthentication to target path
 
-## Authorization
+|Paramater|Description|Default|
+|-|-|-|
+|redirect|target path for redirection||
+|authName|identifier for multiple login|"user"|
+
+```ts
+import { AuthGuard } from 'src/k/authGuard'
+
+express.Router()
+  .get('/user',AuthGuard('/'),UserController.getIndex)
+  .get('/admin',AuthGuard('/','admin'),AdminController.getIndex)
+```
+
+## Reverse Guard
+
+Redirect authentication to target path
+
+|Paramater|Description|Default|
+|-|-|-|
+|redirect|target path for redirection||
+|authName|identifier for multiple login|"user"|
+
+```ts
+import { RedirectOnAuth } from 'src/k/authGuard'
+
+express.Router()
+  .get('/login',RedirectOnAuth('/user'),SiteController.getLogin)
+```
 
 # Angular Support
 
