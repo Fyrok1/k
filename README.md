@@ -380,7 +380,7 @@ Redirect unauthentication to target path
 import { AuthGuard } from 'src/k/authGuard'
 
 express.Router()
-  .get('/user',AuthGuard('/'),UserController.getIndex)
+  .get('/user',AuthGuard('/','user'),UserController.getIndex)
   .get('/admin',AuthGuard('/','admin'),AdminController.getIndex)
 ```
 
@@ -397,7 +397,7 @@ Redirect authentication to target path
 import { RedirectOnAuth } from 'src/k/authGuard'
 
 express.Router()
-  .get('/login',RedirectOnAuth('/user'),SiteController.getLogin)
+  .get('/login',RedirectOnAuth('/user','user'),SiteController.getLogin)
 ```
 
 # Angular Support

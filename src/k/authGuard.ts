@@ -26,9 +26,9 @@ export function AuthGuard(redirect: unasignedObject | string, authName: string =
   }
 }
 
-export function RedirectOnAuth(redirect: string,auth: string="user") {
+export function RedirectOnAuth(redirect: string,authName: string="user") {
   return async function (req: express.Request, res: express.Response, next: express.NextFunction): Promise<express.Handler> {
-    if (req.session.auth && req.session.auth[auth]) {
+    if (req.session.auth && req.session.auth[authName]) {
       res.redirect(redirect);
     } else {
       next();
