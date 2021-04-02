@@ -1,12 +1,11 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
-
 @Table({
   modelName: 'Log',
   tableName: 'logs',
   updatedAt: false
 })
-export class Log extends Model {
+export default class Log extends Model {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,

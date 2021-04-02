@@ -110,7 +110,7 @@ export const RenderMiddleware = () => {
 
       if (process.env.NODE_ENV != "production") {
         const page = await res.KRender.appRender({
-          ...options,
+          options:options,
           page:view
         })
         res.KRender.render({

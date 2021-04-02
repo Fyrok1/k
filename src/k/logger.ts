@@ -1,6 +1,21 @@
 import winston, { format } from "winston"
 import Transport from "winston-transport"
-import { Log } from "./models/log.model";
+import Log from "./models/log.model";
+
+class ConsoleTransport extends Transport {
+  constructor(opts){
+    super(opts);
+  }
+
+  log(info, callback) {
+    setImmediate(() => {
+      this.emit('logged', info);
+    });
+
+    console.log(info.message);
+    callback();
+  }
+}
 
 class SequelizeTransport extends Transport {
   constructor(opts) {
@@ -55,7 +70,7 @@ export const Logger = winston.createLogger({
   )
 })
 if (process.env.NODE_ENV != 'production') {
-  Logger.add(new winston.transports.Console({ format: winston.format.simple() }));
+  Logger.add(new ConsoleTransport({}));
 } else {
   if (process.env.DB == "1") {
     Logger.add(new SequelizeTransport({}))

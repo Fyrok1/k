@@ -400,6 +400,27 @@ express.Router()
   .get('/login',RedirectOnAuth('/user','user'),SiteController.getLogin)
 ```
 
+# Request Validation
+
+For more detail [express-validator](https://express-validator.github.io/)
+
+**example**
+
+```ts
+import { validate } from 'src/k/validator';
+import { check } from 'express-validator';
+
+export const SiteRouter = router
+  .post('/signin',validate([
+    check('email')
+      .notEmpty().withMessage('e-mail can not empty')
+      .isString().withMessage('check your e-mail')
+      .isEmail().withMessage('check your e-mail'),
+    check('password')
+      .notEmpty().withMessage('password can not empty')
+  ]),SiteController.postSignin)
+```
+
 # Angular Support
 
 `k-cli new <projectName>` comes with an hello world app in apps folder.
