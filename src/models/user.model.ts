@@ -1,4 +1,4 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, BeforeCreate } from 'sequelize-typescript';
 import bcrypt from "bcrypt";
 
 // User.create({
@@ -9,51 +9,48 @@ import bcrypt from "bcrypt";
 // }) 
 
 @Table({
-  modelName: 'User',
-  tableName: 'users',
-  paranoid: true,
+	modelName: 'User',
+	tableName: 'users',
+	paranoid: true,
 })
 export default class User extends Model {
-  @Column({
-    type: DataType.STRING,
-    allowNull: false
-  })
-  name: string
+	@Column({
+		type: DataType.STRING,
+		allowNull: false
+	})
+	name: string
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: false
-  })
-  email: string
+	@Column({
+		type: DataType.STRING,
+		allowNull: false
+	})
+	email: string
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: false
-  })
-  password: string
+	@Column({
+		type: DataType.STRING,
+		allowNull: false
+	})
+	password: string
 
-  @Column({
-    type: DataType.TINYINT,
-    allowNull: false,
-    defaultValue: 1
-  })
-  status: string
+	@Column({
+		type: DataType.TINYINT,
+		allowNull: false,
+		defaultValue: 1
+	})
+	status: string
 
-  async validPassword(password: string): Promise<boolean> {
-    try {
-      return await bcrypt.compare(password, this.password);
-    } catch (error) {
-      return false
-    }
-  }
+	@BeforeCreate
+	static hashPasswordBeforeCreate(user: User) {
+		if (user.password) {
+			user.password = bcrypt.hashSync(user.password, 10);
+		}
+	}
+
+	async validPassword(password: string): Promise<boolean> {
+		try {
+			return await bcrypt.compare(password, this.password);
+		} catch (error) {
+			return false
+		}
+	}
 }
-
-// User.beforeCreate((user:User, options) => {
-//   return bcrypt.hash(user.password, 10)
-//     .then(hash => {
-//       user.password = hash;
-//     })
-//     .catch(err => { 
-//       throw new Error(); 
-//     });
-// })

@@ -16,7 +16,8 @@ export const CheckCustomErrors = async () => {
   }
 }
 
-export const KViewPath = path.join(__dirname, '/views')
+export const KViewPath = path.join(path.resolve(), '/src/k/views')
+export const viewPath = path.join(path.resolve(), '/src/views')
 
 export const KRenderMiddleware = () => {
   return function (req, res, next) {
@@ -57,6 +58,27 @@ export const KRenderMiddleware = () => {
             res.send(layoutPage)
           } else {
             res.send(page)
+          }
+        } catch (error) {
+          Logger.error(error);
+          res.send(error)
+        }
+      },
+      async appRender(renderOptions: KRenderAppRenderOptions) {
+        try {
+          const options = {
+            ...(res.locals ?? {}),
+            ...(renderOptions.options ?? {})
+          }
+          const layout = renderOptions.layout ?? options.layout;
+          delete options.layout
+
+          const page = await ejs.renderFile(path.join(viewPath, renderOptions.page+'.ejs'), options);
+          if (layout) {
+            const layoutPage = await ejs.renderFile(path.join(viewPath, layout+'.ejs'), { ...options, body: page })
+            return layoutPage
+          } else {
+            return page
           }
         } catch (error) {
           Logger.error(error);
@@ -105,7 +127,7 @@ export const KRenderMiddleware = () => {
             res.send(error)
           }
         }
-      }
+      },
     };
     next()
   }
@@ -113,6 +135,7 @@ export const KRenderMiddleware = () => {
 
 export interface IKRender {
   render: (renderOptions: KRenderRenderOptions) => void,
+  appRender: (renderOptions: KRenderAppRenderOptions) => void,
   renderHTML: (renderOptions: KRenderRenderHTMLOptions) => void,
   error: (errorOptions: KRenderErrorOptions) => void,
   renderNotSend: (renderOptions: KRenderRenderOptions) => Promise<string>
@@ -126,6 +149,11 @@ export interface KRenderRenderOptions {
 
 export interface KRenderRenderHTMLOptions {
   html: string,
+  layout?: string,
+  options?: object,
+}
+export interface KRenderAppRenderOptions {
+  page: string,
   layout?: string,
   options?: object,
 }

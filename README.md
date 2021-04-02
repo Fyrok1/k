@@ -40,9 +40,9 @@ For more information [k-cli](https://github.com/Fyrok1/k-cli)
 
 you could access default express app with 
 
-`
+```ts
 import app from 'src/k/app'
-`
+```
 
 ## Routing
 
@@ -135,13 +135,16 @@ DefaultRouter
 
 ## Views
 
-Server
+> Right know only **ejs** supported
+
 Views will stored in `src/views` with .ejs extension
 We have four folder
 1. Layouts
 2. Pages
 3. Partials
 4. Errors
+
+> **Build do not include views and other ejs files do not delete src folder on production**
 
 ### Layouts
 
@@ -329,9 +332,98 @@ Logger.error("Error log")
 Logger.warn("Warn log")
 ```
 
-> In Development, Logs not gonna stored in DB or .log file, only showing in console
+> In Development, Logs not gonna stored in DB or .log file, only print to console
+
+# Authentication
+
+## Login
+
+```ts
+import { Login } from 'src/k/authGuard'
+
+Login(req: express.Request, authName:string="user", auth:object={} ):Promise<void>
+```
+
+|Paramater|Description|Default|
+|-|-|-|
+|req|express.Request||
+|authName|identifier for multiple login|"user"|
+|auth|identifier values ex:user id|{}|
+
+stores session variables under `req.session.auth[authName]`
+
+## Logout
+
+```ts
+import { Logout } from 'src/k/authGuard'
+
+Logout(req: express.Request, authName: string = 'user'): Promise<void>
+```
+
+|Paramater|Description|Default|
+|-|-|-|
+|req|express.Request||
+|authName|identifier for multiple login|"user"|
+
+clear session variables under `req.session.auth[authName]`
+
+## Guard
+
+Redirect unauthentication to target path
+
+|Paramater|Description|Default|
+|-|-|-|
+|redirect|target path for redirection||
+|authName|identifier for multiple login|"user"|
+
+```ts
+import { AuthGuard } from 'src/k/authGuard'
+
+express.Router()
+  .get('/user',AuthGuard('/','user'),UserController.getIndex)
+  .get('/admin',AuthGuard('/','admin'),AdminController.getIndex)
+```
+
+## Reverse Guard
+
+Redirect authentication to target path
+
+|Paramater|Description|Default|
+|-|-|-|
+|redirect|target path for redirection||
+|authName|identifier for multiple login|"user"|
+
+```ts
+import { RedirectOnAuth } from 'src/k/authGuard'
+
+express.Router()
+  .get('/login',RedirectOnAuth('/user','user'),SiteController.getLogin)
+```
+
+# Request Validation
+
+For more detail [express-validator](https://express-validator.github.io/)
+
+**example**
+
+```ts
+import { validate } from 'src/k/validator';
+import { check } from 'express-validator';
+
+export const SiteRouter = router
+  .post('/signin',validate([
+    check('email')
+      .notEmpty().withMessage('e-mail can not empty')
+      .isString().withMessage('check your e-mail')
+      .isEmail().withMessage('check your e-mail'),
+    check('password')
+      .notEmpty().withMessage('password can not empty')
+  ]),SiteController.postSignin)
+```
 
 # Angular Support
+
+`k-cli new <projectName>` comes with an hello world app in apps folder.
 
 > Tested on `Angular CLI: 11.2.5`
 
@@ -349,15 +441,10 @@ Logger.warn("Warn log")
 
 > You can use `ng serve` for development but you may encounter some problems mostly about url
 
-# Known Issues
-
-1. Socket io usage on development with SOCKET=1
-
 # TO DO
 
 * Custom Functions will gather under K
 * Microservices
-* Tailwind Support
 
 > **Tested on Ubuntu 20.04 and Windows 10**
 

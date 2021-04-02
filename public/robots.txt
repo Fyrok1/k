@@ -1,9 +1,0 @@
-# Grup 1
-User-agent: Googlebot
-Disallow: /nogooglebot/
-
-# Grup 2
-User-agent: *
-Allow: /
-
-Site haritası: http://127.0.0.1/sitemap.xml

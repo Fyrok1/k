@@ -2,9 +2,9 @@ import express from "express";
 import { Logger } from "./logger";
 import { unasignedObject } from "./interfaces";
 
-export function AuthGuard(auth: string, redirect: unasignedObject | string) {
+export function AuthGuard(redirect: unasignedObject | string, authName: string = "user") {
   return async function (req: express.Request, res: express.Response, next: express.NextFunction): Promise<express.Handler> {
-    if (req.session.auth && req.session.auth[auth]) {
+    if (req.session.auth && req.session.auth[authName]) {
       next();
     } else {
       if (typeof redirect == "string") {
@@ -26,9 +26,9 @@ export function AuthGuard(auth: string, redirect: unasignedObject | string) {
   }
 }
 
-export function RedirectOnAuth(auth: string, redirect: string) {
+export function RedirectOnAuth(redirect: string,authName: string="user") {
   return async function (req: express.Request, res: express.Response, next: express.NextFunction): Promise<express.Handler> {
-    if (req.session.auth && req.session.auth[auth]) {
+    if (req.session.auth && req.session.auth[authName]) {
       res.redirect(redirect);
     } else {
       next();
@@ -37,10 +37,26 @@ export function RedirectOnAuth(auth: string, redirect: string) {
   }
 }
 
-export function Logout(req: express.Request, auth: string): Promise<void> {
+export function Login(req: express.Request, authName:string="user", auth:object={} ):Promise<void>{
+  return new Promise<void>((resolve,reject)=>{
+    if (!req.session.auth) {
+      req.session.auth = {};
+    }
+    req.session.auth[authName] = auth;
+    req.session.save(err=>{
+      if (err) {
+        reject(err)
+      }else{
+        resolve()
+      }
+    })
+  })
+}
+
+export function Logout(req: express.Request, authName: string = 'user'): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     try {
-      delete req.session.auth[auth]
+      delete req.session.auth[authName]
       if (Object.keys(req.session.auth).length === 0 && req.session.auth.constructor === Object) {
         delete req.session.auth
       }
@@ -57,25 +73,4 @@ export function Logout(req: express.Request, auth: string): Promise<void> {
       })
     }
   })
-}
-
-export function CheckAuthority(authorityId: number, authName: string | null = null) {
-  return async function (req: express.Request, res: express.Response, next: express.NextFunction): Promise<express.Handler> {
-    try {
-      let authorities
-      if (authName) {
-        authorities = req.session.auth[authName].authorities
-      } else {
-        authorities = req.session.authorities
-      }
-      if (authorities.includes(authorityId)) {
-        next()
-      } else {
-        res.status(400).send({ alert: "Bu işlem için yetkiniz yok" })
-      }
-    } catch (e) {
-      res.status(400).send({ alert: "Bu işlem için yetkiniz yok" })
-    }
-    return;
-  }
 }

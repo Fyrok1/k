@@ -131,7 +131,18 @@ app.use((err, req, res, next) => {
   res.status(500)
   Logger.error(err, { ip: req.session.ip ?? 'SYSTEM' })
   try {
-    res.KRender.error({ error: err })
+    if (req.accepts('html')) {
+      res.KRender.error({ error: err })
+    }else if(req.accepts('json')){
+      res.json({
+        error:err.toString(),
+        msg:"something went wrong"
+      })    
+    }else if(req.accepts('text/plain')){
+      res.send(err.toString())
+    }else{
+      res.send()
+    }
   } catch (error) {
     res.send(error)
   }

@@ -1,7 +1,5 @@
-<% if (env.NODE_ENV != 'production' || env.SOCKET != 0) { %>
-<script src="/socket.io/socket.io.js"></script>
-<% } %>
 <% if(env.NODE_ENV != 'production'){ %>
+<script src="/socket.io/socket.io.js"></script>
 <script>
   refreshCSS = () => { 
     const links = document.getElementsByTagName('link'); 

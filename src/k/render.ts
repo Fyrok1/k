@@ -5,7 +5,6 @@ import ejs from 'ejs';
 import fs from 'fs'
 import express from 'express'
 import { unasignedObject } from "./interfaces";
-import app from "./app";
 
 export const RenderGetMethods = (router: express.Router): express.Router => {
   const _get = router.get;
@@ -38,8 +37,12 @@ export const RenderMiddleware = () => {
           Object.assign(d, res.locals, data)
           return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/views/partials/', filename + '.ejs'), 'utf-8'), d, options)
         },
-        development: () => {
-          return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/k/views/partials/development.ejs'), 'utf-8'), { ...(res.locals ?? {}) })
+        development: (type='classic') => {
+          if (type == 'angular') {
+            return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/k/views/partials/angular-development.ejs'), 'utf-8'), { ...(res.locals ?? {}) })            
+          }else{
+            return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/k/views/partials/development.ejs'), 'utf-8'), { ...(res.locals ?? {}) })
+          }
         },
         iteration: (i: number, page = 1, pageSize = 25) => {
           return (i + 1) + ((page - 1) * pageSize)
@@ -100,22 +103,20 @@ export const RenderMiddleware = () => {
     }
 
     const _render = res.render;
-    res.render = function (view: string, options: object = {}, callback?: (err: Error, html: string) => void) {
+    res.render = async function (view: string, options: object = {}, callback?: (err: Error, html: string) => void) {
       if (!options["layout"] && res.layout) {
         options["layout"] = res.layout;
       }
 
       if (process.env.NODE_ENV != "production") {
-        app.render(view, options, (err, html) => {
-          if (err) {
-            throw err;
-          } else {
-            res.KRender.render({
-              page: "shell.ejs",
-              options: {
-                body: html
-              }
-            })
+        const page = await res.KRender.appRender({
+          options:options,
+          page:view
+        })
+        res.KRender.render({
+          page: "shell.ejs",
+          options: {
+            body: page
           }
         })
       } else {

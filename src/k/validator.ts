@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { ValidationChain, validationResult } from 'express-validator'
 import express from 'express'
 // export const validateAll = (validations:any) => {
@@ -14,10 +15,17 @@ import express from 'express'
 // };
 
 // sequential processing, stops running validations chain if the previous one have failed.
-export const validate = (validations: ValidationChain[]) => {
+export const validate = (validations: Array<ValidationChain|Function>) => {
   return async (req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> => {
     for (const validation of validations) {
-      const result = await validation.run(req);
+      let result;
+      // @ts-ignore
+      if (validation.run == undefined) {
+        result = await (validation(req,res,next).run(req))
+      }else{
+        // @ts-ignore
+        result = await validation.run(req);
+      }
       if (!result.isEmpty()) break;
     }
 
