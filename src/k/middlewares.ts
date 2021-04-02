@@ -134,7 +134,10 @@ app.use((err, req, res, next) => {
     if (req.accepts('html')) {
       res.KRender.error({ error: err })
     }else if(req.accepts('json')){
-      res.json(err)
+      res.json({
+        error:err.toString(),
+        msg:"something went wrong"
+      })    
     }else if(req.accepts('text/plain')){
       res.send(err.toString())
     }else{
