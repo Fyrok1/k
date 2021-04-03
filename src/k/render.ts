@@ -5,6 +5,7 @@ import ejs from 'ejs';
 import fs from 'fs'
 import express from 'express'
 import { unasignedObject } from "./interfaces";
+import { CustomErrors } from "./kRender";
 
 export const RenderGetMethods = (router: express.Router): express.Router => {
   const _get = router.get;
@@ -121,6 +122,24 @@ export const RenderMiddleware = () => {
         })
       } else {
         _render.call(this, view, options, callback);
+      }
+    }
+
+    res.send404 = async function(){
+      res.status(404)
+      if (req.accepts('html')) {
+        if (CustomErrors[404]) {
+          res.render('errors/404', {
+            ...res.locals
+          })
+        } else {
+          res.KRender.render({
+            page: '404.ejs',
+            layout: "shell.ejs"
+          })
+        }
+      } else {
+        res.send();
       }
     }
 

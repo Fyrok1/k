@@ -15,7 +15,8 @@ declare module "express" {
   }
   export interface Response extends Express.Response {
     layout?: string,
-    KRender: IKRender
+    KRender: IKRender,
+    send404: Function
   }
 }
 

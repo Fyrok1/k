@@ -109,21 +109,7 @@ if (process.env.MULTI_LANG == "1") {
 }
 
 app.use(async function (req, res: express.Response) {
-  res.status(404)
-  if (req.accepts('html')) {
-    if (CustomErrors[404]) {
-      res.render('errors/404', {
-        ...res.locals
-      })
-    } else {
-      res.KRender.render({
-        page: '404.ejs',
-        layout: "shell.ejs"
-      })
-    }
-  } else {
-    res.send();
-  }
+  res.send404()
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
