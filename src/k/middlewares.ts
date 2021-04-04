@@ -26,7 +26,7 @@ import { RenderMiddleware } from './render';
 import { DefaultRouter, MultilangRouter } from '../web/router';
 import { ChangeLanguageMiddleware, RedirectToMultilang, supportedLanguges } from './language';
 import { HttpConfig } from '../web/http';
-import { CustomErrors, KRenderMiddleware } from './kRender';
+import { KRenderMiddleware } from './kRender';
 
 if (process.env.NODE_ENV != "production") app.disable('view cache');
 app.enable('trust proxy')
