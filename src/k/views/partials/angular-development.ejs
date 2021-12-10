@@ -1,23 +1,26 @@
-<% if(env.NODE_ENV != 'production'){ %>
+<% if (env.NODE_ENV != 'production' || env.SOCKET != 0) { %>
 <script src="/socket.io/socket.io.js"></script>
+<% } %>
+<% if(env.NODE_ENV != 'production'){ %>
 <script>
-  refreshCSS = () => { 
-    const links = document.getElementsByTagName('link'); 
-    for (let i = 0; i < links.length; i++) { 
-      if (!links[i].hasAttribute('not-reload') && links[i].getAttribute('rel') == 'stylesheet' && links[i].getAttribute('href')) { 
-        const href = links[i].getAttribute('href').split('?')[0]; 
-        const newHref = href + '?version=' + new Date().getMilliseconds(); 
-        links[i].setAttribute('href', newHref); 
-      } 
-    } 
+  refreshCSS = () => {
+    const links = document.getElementsByTagName('link');
+    for (let i = 0; i < links.length; i++) {
+      if (!links[i].hasAttribute('not-reload') && links[i].getAttribute('rel') == 'stylesheet' && links[i]
+        .getAttribute('href')) {
+        const href = links[i].getAttribute('href').split('?')[0];
+        const newHref = href + '?version=' + new Date().getMilliseconds();
+        links[i].setAttribute('href', newHref);
+      }
+    }
   }
   var socket = io();
-  socket.on('refresh-css',()=>{
+  socket.on('refresh-css', () => {
     console.log("CSS Updated");
     refreshCSS()
   })
 
-  socket.on('refresh-page',()=>{
+  socket.on('refresh-page', () => {
     setTimeout(() => {
       location.reload()
     }, 1000);

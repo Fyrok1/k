@@ -9,7 +9,6 @@
 * Database migration with [Sequelize](https://sequelize.org/master/)
 * MVC architecture
 * Multi language support with [i18next](https://www.i18next.com/)
-* [Angular](https://angular.io/) Support
 * [CSRF](https://www.npmjs.com/package/csurf) protection
 * [SCSS](https://sass-lang.com/) compailer
 * Server Side Render with [EJS](https://ejs.co/)
@@ -24,7 +23,6 @@
 * Simple build and start
 * Auto refresh on changes (.ts, .ejs and public folder)
 * On (S)CSS change page updated without page refresh
-* Build and Watch angular app and refresh pages
 
 ## Installation 🎟
 
@@ -59,7 +57,6 @@ When multi-language support is activated, it will be used for it, otherwise it i
 ```ts
 export const DefaultRouter = express.Router()
   .use(CsrfProtection) // Csrf Protection
-  .use('/app', RenderAngularApp('hello-world')) // Angular App Usage. 'hello-world' is name of angular app folder
   .use('/', RateLimiterMiddleware, SiteRouter) // Simple Router Usage
 
 // Look for Documantation for more information https://github.com/Fyrok1/k
@@ -421,30 +418,11 @@ export const SiteRouter = router
   ]),SiteController.postSignin)
 ```
 
-# Angular Support
-
-`k-cli new <projectName>` comes with an hello world app in apps folder.
-
-> Tested on `Angular CLI: 11.2.5`
-
-## Usage
-
-1. Create an angular app using `ng new <app-name>` in `apps/` folder.
-1. Set `outputPath:"../../dist/<app-name>"` in `angular.json`
-1. Set `baseHref:""` in `angular.json`
-1. You have to use angular router and set `useHash:true`
-1. Add `"app-<app-name>":"cd dist/<app-name> && npm build --watch"` to `<root>/package.json` scripts
-1. Add angular app to a router like below
-```ts
-  .use('/app', RenderAngularApp('hello-world'))
-```
-
 > You can use `ng serve` for development but you may encounter some problems mostly about url
 
 # TO DO
-
-* Custom Functions will gather under K
-* Microservices
+1. have fun ?
+1. cypress test or karma
 
 > **Tested on Ubuntu 20.04 and Windows 10**
 

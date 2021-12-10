@@ -11,11 +11,12 @@ declare module "express" {
       },
       [key: string]: any
     },
-    i18n?: any
+    i18n?: any,
   }
   export interface Response extends Express.Response {
     layout?: string,
-    KRender: IKRender
+    KRender: IKRender,
+    send404: (req: Request, res: Response) => void,
   }
 }
 

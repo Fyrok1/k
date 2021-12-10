@@ -12,7 +12,20 @@ class ConsoleTransport extends Transport {
       this.emit('logged', info);
     });
 
-    console.log(info.message);
+    const logArray = [];
+
+    let i = 0;
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      if (info[i] === undefined) {
+        break;
+      } else{
+        logArray.push(info[i]);
+      }
+      i++;
+    }
+    console.log(info.timestamp,info.message,...logArray);
+
     callback();
   }
 }

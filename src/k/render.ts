@@ -5,6 +5,8 @@ import ejs from 'ejs';
 import fs from 'fs'
 import express from 'express'
 import { unasignedObject } from "./interfaces";
+import { CustomErrors } from "./kRender";
+import { Logger } from "./logger";
 
 export const RenderGetMethods = (router: express.Router): express.Router => {
   const _get = router.get;
@@ -37,12 +39,8 @@ export const RenderMiddleware = () => {
           Object.assign(d, res.locals, data)
           return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/views/partials/', filename + '.ejs'), 'utf-8'), d, options)
         },
-        development: (type='classic') => {
-          if (type == 'angular') {
-            return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/k/views/partials/angular-development.ejs'), 'utf-8'), { ...(res.locals ?? {}) })            
-          }else{
-            return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/k/views/partials/development.ejs'), 'utf-8'), { ...(res.locals ?? {}) })
-          }
+        development: () => {
+          return ejs.render(fs.readFileSync(path.join(path.resolve(), '/src/k/views/partials/development.ejs'), 'utf-8'), { ...(res.locals ?? {}) })
         },
         iteration: (i: number, page = 1, pageSize = 25) => {
           return (i + 1) + ((page - 1) * pageSize)
@@ -107,11 +105,14 @@ export const RenderMiddleware = () => {
       if (!options["layout"] && res.layout) {
         options["layout"] = res.layout;
       }
+      res.locals._rendered = true;
+
+      Logger.info(`RENDER`, [view, options])
 
       if (process.env.NODE_ENV != "production") {
         const page = await res.KRender.appRender({
-          options:options,
-          page:view
+          options: options,
+          page: view
         })
         res.KRender.render({
           page: "shell.ejs",
@@ -121,6 +122,55 @@ export const RenderMiddleware = () => {
         })
       } else {
         _render.call(this, view, options, callback);
+      }
+    }
+
+    const _send = res.send;
+    res.send = (async function (data) {
+      if (!res.locals._rendered) {
+        Logger.info(`SEND`, [data])
+      }
+      _send.call(this, data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }) as any
+
+    const _write = res.write;
+    res.write = (async function (data: string) {
+      if (res.locals._writedbody) {
+        res.locals._writedbody += " "+data;
+      } else {
+        res.locals._writedbody = data;
+      }
+      _write.call(this, data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }) as any
+
+    const _end = res.end;
+    res.end = (async function (data) {
+      let writebody = res.locals._writedbody ?? "";
+      if (data) {
+        writebody += " "+data;
+      }
+      Logger.info(`SEND WITH END`, [req.ip, writebody])
+      _end.call(this, data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }) as any
+
+    res['send404'] = async function (req: express.Request, res: express.Response) {
+      res.status(404)
+      if (req.accepts('html')) {
+        if (CustomErrors[404]) {
+          res.render('errors/404', {
+            ...res.locals
+          })
+        } else {
+          res.KRender.render({
+            page: '404.ejs',
+            layout: "shell.ejs"
+          })
+        }
+      } else {
+        res.send();
       }
     }
 
@@ -142,42 +192,3 @@ export const SetLayoutMiddleware = (layout: string) => {
   }
 }
 
-export const RenderAngularAppFile = (appName: string) => {
-  return async (req: express.Request, res: express.Response) => {
-    res.layout = null;
-    let url = req.originalUrl.split('?')[0].trim();
-    
-    if (url.indexOf('.') == -1 && url[url.length - 1] != "/") {
-      res.redirect(url + '/')
-    } else if (req.url == `/`) {
-      const filePath = path.join(path.resolve(), 'dist/' + appName + '/index.html')
-      if (fs.existsSync(filePath)) {
-        if (process.env.NODE_ENV == "production") {
-          res.sendFile(filePath)
-        } else {
-          const body = fs.readFileSync(filePath, "utf-8")
-          res.KRender.renderHTML({
-            html: body,
-            layout:"app-shell.ejs"
-          })
-        }
-      } else {
-        res.status(404).send()
-      }
-    } else {
-      url = req.url.split('?')[0].trim();
-      const filePath = path.join(path.resolve(), 'dist/' + appName + '/' + url);
-      if (fs.existsSync(filePath)) {
-        res.sendFile(path.join(path.resolve(), 'dist/' + appName + '/' + url))
-      } else {
-        res.status(404).send()
-      }
-    }
-    return;
-  }
-}
-
-export const RenderAngularApp = (appName: string): express.Router => {
-  return express.Router()
-    .get('*', RenderAngularAppFile(appName))
-}

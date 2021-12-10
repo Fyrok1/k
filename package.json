@@ -10,7 +10,6 @@
     "production": "concurrently 'npm:tsc' 'npm:scss' 'npm:node' 'npm:nodemon'",
     "nodemon": "nodemon --inspect=0.0.0.0:9300 -r dotenv/config dist/build/k/index.js",
     "serve": "concurrently 'npm:scss' 'npm:node'",
-    "angular-app": "cd apps/hello-world && ng build --watch",
     "node": "ts-node-dev --inspect=0.0.0.0:9300 -r dotenv/config --respawn --transpile-only ./src/k/index.ts",
     "scss": "node-sass-chokidar ./scss -o ./public/assets/css --watch -r --output-style compressed",
     "scss-build": "node-sass-chokidar ./scss -o ./public/assets/css -r --output-style compressed",
@@ -29,6 +28,7 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
+    "cheerio": "^1.0.0-rc.10",
     "connect-redis": "^5.0.0",
     "connect-session-sequelize": "^7.0.4",
     "cookie-parser": "^1.4.5",
