@@ -5,6 +5,14 @@
   font-family: "Ubuntu Mono", monospace;
 }
 
+.back-button {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  text-decoration: none !important;
+  font-size: 1.4rem;
+}
+
 .mh-v100 {
   min-height: 100vh;
 }
