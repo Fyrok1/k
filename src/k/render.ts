@@ -151,7 +151,10 @@ export const RenderMiddleware = () => {
       if (data) {
         writebody += " "+data;
       }
-      Logger.info(`SEND WITH END`, [req.ip, writebody])
+      if (!res.locals._rendered) {
+        Logger.info(`SENDED WITH END`, [req.ip, writebody])
+      }
+
       _end.call(this, data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any
