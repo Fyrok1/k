@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import express from 'express';
 import mkdirp from 'mkdirp';
 
-export const randomText = (length: number) => {
+export const randomText = (length: number): string => {
   let result = '';
   const characters =
     'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -13,7 +12,7 @@ export const randomText = (length: number) => {
   return result;
 };
 
-export const getUrls = function (...args: any[]) {
+export const getUrls = function (...args: Array<any>): Array<string> {
   const arr: any = [];
   for (let i = 0; i < args.length; i++) {
     if (args[i].stack instanceof Array) {
@@ -30,7 +29,7 @@ export const getUrls = function (...args: any[]) {
   return arr;
 };
 
-export const getIp = function (req: express.Request) {
+export const getIp = function (req: express.Request): string {
   const q = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   let ip = q != null ? q.toString() : '';
   if (ip.substr(0, 7) == '::ffff:') {
@@ -41,7 +40,9 @@ export const getIp = function (req: express.Request) {
   return ip;
 };
 
-export const createRequiredFolders = async function (folderList: string[]) {
+export const createRequiredFolders = async function (
+  folderList: string[]
+): Promise<void> {
   folderList.forEach(async (folderPath) => {
     await mkdirp.sync(folderPath);
   });

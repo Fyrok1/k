@@ -13,15 +13,15 @@ export const gitPull = async (
 ): Promise<void> => {
   const hmac = crypto.createHmac('sha1', process.env.SECRET ?? '');
   const sig = 'sha1=' + hmac.update(JSON.stringify(req.body)).digest('hex');
-  const commits =
-    req.body.head_commit.message.split('\n').length == 1
-      ? req.body.head_commit.message
-      : req.body.head_commit.message
-        .split('\n')
-        .map((el, i: number) =>
-          i !== 0 ? '                       ' + el : el
-        )
-        .join('\n');
+  let commits;
+  if (req.body.head_commit.message.split('\n').length == 1) {
+    commits = req.body.head_commit.message;
+  } else {
+    req.body.head_commit.message
+      .split('\n')
+      .map((el, i: number) => (i !== 0 ? '                       ' + el : el))
+      .join('\n');
+  }
 
   Logger.info(`[GIT] web hook`);
   if (sig == req.headers['x-hub-signature']) {

@@ -30,7 +30,7 @@ import {
   supportedLanguges,
 } from './language';
 import { HttpConfig } from '../web/http';
-import { CustomErrors, KRenderMiddleware } from './kRender';
+import { KRenderMiddleware } from './kRender';
 
 if (process.env.NODE_ENV != 'production') app.disable('view cache');
 app.enable('trust proxy');
@@ -76,11 +76,11 @@ app.use(
       process.env.REDIS == '1'
         ? new (connectRedis(session))({ client: Redis })
         : process.env.DB == '1'
-          ? new (connectSessionSequelize(session.Store))({
+        ? new (connectSessionSequelize(session.Store))({
             db: sequelize,
             tableName: 'session',
           })
-          : new (MemoryStore(session))({
+        : new (MemoryStore(session))({
             checkPeriod: 1000 * 60 * 60 * 2,
           }),
     cookie: {

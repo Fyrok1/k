@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { ValidationChain, validationResult } from 'express-validator';
 import express from 'express';
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const validate = (validations: Array<ValidationChain | Function>) => {
   return async (
