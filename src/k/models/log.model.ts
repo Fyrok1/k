@@ -3,26 +3,26 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 @Table({
   modelName: 'Log',
   tableName: 'logs',
-  updatedAt: false
+  updatedAt: false,
 })
 export default class Log extends Model {
   @Column({
     type: DataType.INTEGER,
     primaryKey: true,
-    autoIncrement: true
+    autoIncrement: true,
   })
-  id: Number;
+  id: number;
 
   @Column({
-    type: DataType.STRING
+    type: DataType.STRING,
   })
-  level: String;
+  level: string;
 
   @Column({
     type: DataType.TEXT({ length: 'medium' }),
     set: function (value) {
       try {
-        const val = JSON.stringify(value)
+        const val = JSON.stringify(value);
         this.setDataValue('message', val);
       } catch (error) {
         this.setDataValue('message', value);
@@ -31,8 +31,8 @@ export default class Log extends Model {
     },
     get: function () {
       return JSON.parse(this.getDataValue('meta'));
-    }
+    },
   })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  message: any
+  message: any;
 }

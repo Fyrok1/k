@@ -13,12 +13,12 @@ export default class Session extends Model {
   sid: string;
 
   @Column({
-    type: DataType.DATE
+    type: DataType.DATE,
   })
   expires: Date;
 
   @Column({
-    type: DataType.TEXT({ length: 'medium' })
+    type: DataType.TEXT({ length: 'medium' }),
   })
-  data: string
+  data: string;
 }

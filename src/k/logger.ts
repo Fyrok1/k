@@ -1,9 +1,9 @@
-import winston, { format } from "winston"
-import Transport from "winston-transport"
-import Log from "./models/log.model";
+import winston, { format } from 'winston';
+import Transport from 'winston-transport';
+import Log from './models/log.model';
 
 class ConsoleTransport extends Transport {
-  constructor(opts){
+  constructor(opts) {
     super(opts);
   }
 
@@ -19,12 +19,12 @@ class ConsoleTransport extends Transport {
     while (true) {
       if (info[i] === undefined) {
         break;
-      } else{
+      } else {
         logArray.push(info[i]);
       }
       i++;
     }
-    console.log(info.timestamp,info.message,...logArray);
+    console.log(info.timestamp, info.message, ...logArray);
 
     callback();
   }
@@ -33,13 +33,13 @@ class ConsoleTransport extends Transport {
 class SequelizeTransport extends Transport {
   constructor(opts) {
     super(opts);
-    if (process.env.DB != "1") {
-      Logger.error(new Error('Sequelize Transport: DB != 1'))
+    if (process.env.DB != '1') {
+      Logger.error(new Error('Sequelize Transport: DB != 1'));
     }
     //
     // Consume any custom options here. e.g.:
     // - Connection information for databases
-    // - Authentication information for APIs (e.g. loggly, papertrail, 
+    // - Authentication information for APIs (e.g. loggly, papertrail,
     //   logentries, etc.).
     //
   }
@@ -49,24 +49,24 @@ class SequelizeTransport extends Transport {
       this.emit('logged', info);
     });
 
-    const message = {}
+    const message = {};
     Object.keys(JSON.parse(JSON.stringify(info)))
-      .filter(key => {
+      .filter((key) => {
         if (!['timestamp', 'level'].includes(key)) {
           return key;
         }
       })
-      .forEach(key => {
-        message[key] = info[key]
-      })
+      .forEach((key) => {
+        message[key] = info[key];
+      });
 
-    if (process.env.DB == "1") {
+    if (process.env.DB == '1') {
       Log.create({
         level: info.level,
         message: message,
-      })
+      });
     } else {
-      Logger.error(new Error('Sequelize Transport: DB != 1'))
+      Logger.error(new Error('Sequelize Transport: DB != 1'));
     }
 
     // Perform the writing to the remote service
@@ -79,16 +79,23 @@ export const Logger = winston.createLogger({
     format.timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',
     }),
-    format.json(),
-  )
-})
+    format.json()
+  ),
+});
 if (process.env.NODE_ENV != 'production') {
   Logger.add(new ConsoleTransport({}));
 } else {
-  if (process.env.DB == "1") {
-    Logger.add(new SequelizeTransport({}))
+  if (process.env.DB == '1') {
+    Logger.add(new SequelizeTransport({}));
   } else {
-    Logger.add(new winston.transports.File({ filename: 'log/output/combined.log' }));
-    Logger.add(new winston.transports.File({ filename: 'log/output/error.log', level: 'error' }));
+    Logger.add(
+      new winston.transports.File({ filename: 'log/output/combined.log' })
+    );
+    Logger.add(
+      new winston.transports.File({
+        filename: 'log/output/error.log',
+        level: 'error',
+      })
+    );
   }
 }

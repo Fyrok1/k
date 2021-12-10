@@ -1,11 +1,12 @@
-import express from 'express'
-import { CsrfProtection } from '../k/csrf'
-import { RateLimiterMiddleware } from '../k/rateLimitter'
-import { SiteRouter } from './routers/site.router'
+import express from 'express';
+import { CsrfProtection } from '../k/csrf';
+import { RateLimiterMiddleware } from '../k/rateLimitter';
+import { SiteRouter } from './routers/site.router';
 
-export const DefaultRouter = express.Router()
+export const DefaultRouter = express
+  .Router()
   .use(CsrfProtection)
-  .use('/', RateLimiterMiddleware, SiteRouter)
+  .use('/', RateLimiterMiddleware, SiteRouter);
 
 // Look for Documantation for more information https://github.com/Fyrok1/k
-export const MultilangRouter = express.Router()
+export const MultilangRouter = express.Router();

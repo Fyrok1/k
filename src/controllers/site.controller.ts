@@ -1,28 +1,28 @@
-import express from 'express'
-import { Login, Logout } from '../k/authGuard'
+import express from 'express';
+import { Login, Logout } from '../k/authGuard';
 
-export const SiteController = new class{
-  getIndex(req:express.Request,res:express.Response){
-    res.render('pages/site/index')
-  }
-
-  getSecret(req,res){
-    res.render('pages/site/secret')
+export const SiteController = new (class {
+  getIndex(req: express.Request, res: express.Response) {
+    res.render('pages/site/index');
   }
 
-  getNonSecret(req,res){
-    res.render('pages/site/nonsecret')
+  getSecret(req, res) {
+    res.render('pages/site/secret');
   }
-  
-  getLogin(req,res){
-    Login(req).then(()=>{
-      res.redirect('/secret')
-    })
+
+  getNonSecret(req, res) {
+    res.render('pages/site/nonsecret');
   }
-  
-  getLogout(req,res){
-    Logout(req).then(()=>{
-      res.redirect('/nonsecret')
-    })
+
+  getLogin(req, res) {
+    Login(req).then(() => {
+      res.redirect('/secret');
+    });
   }
-}
+
+  getLogout(req, res) {
+    Logout(req).then(() => {
+      res.redirect('/nonsecret');
+    });
+  }
+})();
