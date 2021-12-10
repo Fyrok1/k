@@ -3,9 +3,7 @@ import { Login, Logout } from '../k/authGuard'
 
 export const SiteController = new class{
   getIndex(req:express.Request,res:express.Response){
-    res.write('<h1>Hello World</h1>')
-    res.end("test")
-    // res.render('pages/site/index')
+    res.render('pages/site/index')
   }
 
   getSecret(req,res){
