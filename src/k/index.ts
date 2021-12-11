@@ -1,11 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// console.log(process.env.NODE_ENV, 'what');
+import dotenv from 'dotenv';
+import path from 'path';
+
+dotenv.config({
+  path: path.join(path.resolve(), `${process.env.NODE_ENV}.env`),
+});
+
 import { Socket } from './socket';
 import 'express-async-errors';
 import { httpServer } from './app';
-import path from 'path';
 import chokidar from 'chokidar';
 
 // MIDDLEWARES
+
 import './middlewares';
 import i18next from 'i18next';
 import { supportedLanguges } from './language';

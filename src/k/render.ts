@@ -151,8 +151,8 @@ export const RenderMiddleware = () => {
 
     const _send = res.send;
     res.send = async function (data) {
-      if (!res.locals._rendered || !res.locals._sendFile) {
-        Logger.info(`SEND`, [data.length > 100 ? 'long text' : data]);
+      if (data && !res.locals._rendered && !res.locals._sendFile) {
+        Logger.info(`SEND`, data);
       }
       _send.call(this, data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
