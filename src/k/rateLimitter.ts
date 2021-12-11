@@ -20,7 +20,7 @@ export const RateLimiterMiddleware = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) => {
+): void => {
   if (req.url.includes('.')) {
     next();
   } else {
@@ -40,12 +40,18 @@ export const RateLimiterMiddleware = (
 };
 
 export const ClearRateLimitterMiddleware = () => {
-  return async function (req, res, next) {
+  return async function (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ): Promise<void> {
     ClearRateLimitter(req).then(next);
   };
 };
 
-export const ClearRateLimitter = async (req: express.Request) => {
+export const ClearRateLimitter = async (
+  req: express.Request
+): Promise<void> => {
   if (process.env.REDIS == '1') {
     Redis.set(req.session.ip, '1');
   } else {
