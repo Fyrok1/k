@@ -17,8 +17,8 @@ node_modules/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
-.env.dev
+production.env
+development.env
 #.env.test
 
 # pm2 ecosystem
