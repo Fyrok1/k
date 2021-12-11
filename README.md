@@ -289,6 +289,15 @@ req.session.example = 'example'
 Session stored in `Redis`, `Database` or `Memory`
 > Priority is `Redis > Database > Memory` **Memory not recomended for production
 
+## ENV
+
+There is two ENV file `.env` and `.env.dev`.
+
+`yarn run serve` -> `.env.dev`,
+`yarn start` -> `.env`
+
+> if you want to change these settings or file names you can edit package.json scripts
+
 ## Rate limitter
 
 Track request with `RateLimiterMiddleware` middleware.
