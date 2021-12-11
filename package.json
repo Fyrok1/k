@@ -6,9 +6,9 @@
   "scripts": {
     "tsc": "tsc",
     "build": "tsc && npm run scss-build",
-    "start": "export NODE_ENV=production && tsc && npm run scss-build && node dist/server/k/index.js",
+    "start": "NODE_ENV=production tsc && npm run scss-build && node dist/server/k/index.js",
     "serve": "concurrently 'npm:scss' 'npm:node'",
-    "node": "export NODE_ENV=development && ts-node-dev --inspect=0.0.0.0:9300 --respawn --transpile-only ./src/k/index.ts",
+    "node": "NODE_ENV=development ts-node-dev --inspect=0.0.0.0:9300 --respawn --transpile-only ./src/k/index.ts",
     "scss": "node-sass-chokidar ./scss -o ./public/assets/css --watch -r --output-style compressed",
     "scss-build": "node-sass-chokidar ./scss -o ./public/assets/css -r --output-style compressed",
     "lint": "eslint . --ext .ts",
