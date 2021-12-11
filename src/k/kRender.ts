@@ -41,6 +41,7 @@ export const KRenderMiddleware = () => {
             path.join(KViewPath, '/pages/', renderOptions.page),
             options
           );
+          res.locals._rendered = true;
           if (layout) {
             const layoutPage = await ejs.renderFile(
               path.join(KViewPath, '/layouts/', layout),
@@ -65,6 +66,7 @@ export const KRenderMiddleware = () => {
           delete options.layout;
 
           const page = renderOptions.html;
+          res.locals._rendered = true;
           if (layout) {
             const layoutPage = await ejs.renderFile(
               path.join(KViewPath, '/layouts/', layout),
@@ -137,6 +139,7 @@ export const KRenderMiddleware = () => {
         if (typeof errorOptions.error == 'string') {
           errorOptions.error = new Error(errorOptions.error);
         }
+        res.locals._rendered;
         if (CustomErrors[500]) {
           res.render('errors/500', {
             layout: false,

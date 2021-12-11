@@ -131,7 +131,7 @@ export const RenderMiddleware = () => {
       }
       res.locals._rendered = true;
 
-      Logger.info(`RENDER`, [view, options]);
+      Logger.info(`RENDER`, [view.slice(0, 100)]);
 
       if (process.env.NODE_ENV != 'production') {
         const page = await res.KRender.appRender({
@@ -151,10 +151,18 @@ export const RenderMiddleware = () => {
 
     const _send = res.send;
     res.send = async function (data) {
-      if (!res.locals._rendered) {
-        Logger.info(`SEND`, [data]);
+      if (!res.locals._rendered || !res.locals._sendFile) {
+        Logger.info(`SEND`, [data.length > 100 ? 'long text' : data]);
       }
       _send.call(this, data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    const _sendFile = res.sendFile;
+    res.sendFile = async function (data) {
+      res.locals._sendFile = true;
+      Logger.info(`SENDFILE`, [data.replace(path.resolve(), '')]);
+      _sendFile.call(this, data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
@@ -166,20 +174,6 @@ export const RenderMiddleware = () => {
         res.locals._writedbody = data;
       }
       _write.call(this, data);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
-
-    const _end = res.end;
-    res.end = async function (data) {
-      let writebody = res.locals._writedbody ?? '';
-      if (data) {
-        writebody += ' ' + data;
-      }
-      if (!res.locals._rendered) {
-        Logger.info(`SENDED WITH END`, [req.ip, writebody]);
-      }
-
-      _end.call(this, data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any;
 
