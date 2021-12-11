@@ -70,18 +70,6 @@ export const RenderMiddleware = () => {
         iteration: (i: number, page = 1, pageSize = 25) => {
           return i + 1 + (page - 1) * pageSize;
         },
-        link: (url: string, lang?: string) => {
-          if (url[0] != '/') {
-            url = '/' + url;
-          }
-          if (process.env.MULTI_LANG == '1') {
-            if (!lang) {
-              lang = req.i18n.language;
-            }
-            url = path.join('/', lang, url).replace(/\\/g, '/');
-          }
-          return url;
-        },
         _csrf: () => {
           return `<input type="hidden" name="_csrf" value="${req.csrfToken()}">`;
         },

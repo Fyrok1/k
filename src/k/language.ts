@@ -5,6 +5,7 @@ import path from 'path';
 import express from 'express';
 import app from './app';
 import { Logger } from './logger';
+import { UnasignedObject } from './interfaces';
 
 export const defaultLanguage: string =
   process.env.MULTI_LANG == '1' ? process.env.DEFAULT_LANG : '';
@@ -32,7 +33,11 @@ if (process.env.MULTI_LANG == '1') {
 }
 
 export const ChangeLanguageMiddleware = (lang: string) => {
-  return async function (req, res, next) {
+  return async function (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ): Promise<void> {
     req.i18n.changeLanguage(lang, (err: Error) => {
       req.session.language = lang;
       res.locals._language = lang;
@@ -47,7 +52,7 @@ export const ChangeLanguage = (
   req: express.Request,
   res: express.Response,
   lang: string
-) => {
+): Promise<UnasignedObject> => {
   return new Promise((resolve, reject) => {
     req.i18n.changeLanguage(lang, (err: Error) => {
       req.session.language = lang;
@@ -60,19 +65,4 @@ export const ChangeLanguage = (
       }
     });
   });
-};
-
-export const RedirectToMultilang = () => {
-  return (req, res, next) => {
-    const splitted = req.originalUrl.split('/').filter((i) => i);
-    if (supportedLanguges.includes(splitted[0])) {
-      next();
-    } else {
-      res.redirect(
-        `/${defaultLanguage}/${
-          req.originalUrl.trim() != '/' ? req.originalUrl : ''
-        }`
-      );
-    }
-  };
 };

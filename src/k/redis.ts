@@ -46,7 +46,7 @@ export const CheckRedisConnection = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) => {
+): void => {
   if (process.env.REDIS != '1' || redisStatus.status) {
     next();
   } else {

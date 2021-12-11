@@ -42,21 +42,12 @@ if (process.env.NODE_ENV != 'production') {
       }
     });
   chokidar
-    .watch(path.join(path.resolve(), '/src/views'))
+    .watch(path.join(path.resolve(), '/src'))
     .on('all', async (event, path) => {
       if (path.endsWith('.ejs') && cooldown == 0) {
         await CheckCustomErrors();
         cooldown = 2;
         console.log(`EJS UPDATE ${path}`);
-        Socket.emit('refresh-page');
-      }
-    });
-  chokidar
-    .watch(path.join(path.resolve(), '/dist'))
-    .on('all', async (event, path) => {
-      if (cooldown == 0) {
-        cooldown = 2;
-        console.log(`DIST UPDATE ${path}`);
         Socket.emit('refresh-page');
       }
     });

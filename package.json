@@ -1,8 +1,8 @@
 {
   "name": "k",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "k",
-  "main": "dist/k/index.js",
+  "main": "dist/server/k/index.js",
   "scripts": {
     "tsc": "tsc",
     "build": "tsc && npm run scss-build",
@@ -29,7 +29,6 @@
   "dependencies": {
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
-    "cheerio": "^1.0.0-rc.10",
     "connect-redis": "^5.0.0",
     "connect-session-sequelize": "^7.0.4",
     "cookie-parser": "^1.4.5",
@@ -56,7 +55,6 @@
     "memorystore": "^1.6.4",
     "mkdirp": "^1.0.4",
     "mysql2": "^2.2.5",
-    "node-cmd": "^4.0.0",
     "nodemailer": "^6.4.17",
     "path": "^0.12.7",
     "rate-limiter-flexible": "^2.1.15",
@@ -105,7 +103,6 @@
     "gulp-sass": "^4.1.0",
     "node-sass": "^5.0.0",
     "node-sass-chokidar": "^1.5.0",
-    "open": "^8.0.2",
     "prettier": "^2.5.1",
     "ts-node-dev": "^1.1.1"
   }

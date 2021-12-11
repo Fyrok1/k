@@ -44,23 +44,16 @@ import app from 'src/k/app'
 
 ## Routing
 
-`src/web/router.ts` contains two required variable named `DefaultRouter` and `MultilangRouter`
+`src/web/router.ts` contains variable named `DefaultRouter`
 
 * DefaultRouter `express.Router()` !required
 
 Could used for all routes and entegrate other routes
 
-* MultilangRouter `express.Router()` !required
-
-When multi-language support is activated, it will be used for it, otherwise it is no different from DefaultRouter.
-
 ```ts
 export const DefaultRouter = express.Router()
   .use(CsrfProtection) // Csrf Protection
   .use('/', RateLimiterMiddleware, SiteRouter) // Simple Router Usage
-
-// Look for Documantation for more information https://github.com/Fyrok1/k
-export const MultilangRouter = express.Router()
 ```
 
 > If you want to separate the route files, you can keep them in `src/web/routers` folder with .router.ts extension
@@ -330,6 +323,13 @@ Logger.warn("Warn log")
 ```
 
 > In Development, Logs not gonna stored in DB or .log file, only print to console
+
+# i18n
+
+Inside of  a ejs file you can use `i18n` like `<%- t('key') %>`.
+If you need to use i18n in your ts file you can use `i18n` function like `req.i18n.t('key')`.
+
+You can access more detailed documantation [i18n](https://www.npmjs.com/package/i18n) and [i18n-express-middleware](https://www.npmjs.com/package/i18next-express-middleware)
 
 # Authentication
 

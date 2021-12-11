@@ -1,7 +1,9 @@
 import ejs from 'ejs';
 import path from 'path';
 import fs from 'fs';
+import express from 'express';
 import { Logger } from './logger';
+import { UnasignedObject } from './interfaces';
 
 // checking custom error pages
 export let CustomErrors: ICustomErrors = {
@@ -9,7 +11,7 @@ export let CustomErrors: ICustomErrors = {
   '404': fs.existsSync(path.join(path.resolve('src/views/errors/404.ejs'))),
 };
 
-export const CheckCustomErrors = async () => {
+export const CheckCustomErrors = async (): Promise<void> => {
   CustomErrors = {
     '500': fs.existsSync(path.join(path.resolve('src/views/errors/500.ejs'))),
     '404': fs.existsSync(path.join(path.resolve('src/views/errors/404.ejs'))),
@@ -20,7 +22,11 @@ export const KViewPath = path.join(path.resolve(), '/src/k/views');
 export const viewPath = path.join(path.resolve(), '/src/views');
 
 export const KRenderMiddleware = () => {
-  return function (req, res, next) {
+  return function (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+  ): void {
     res.KRender = {
       async render(renderOptions: KRenderRenderOptions) {
         try {
@@ -165,18 +171,18 @@ export interface IKRender {
 export interface KRenderRenderOptions {
   page: string;
   layout?: string;
-  options?: object;
+  options?: UnasignedObject;
 }
 
 export interface KRenderRenderHTMLOptions {
   html: string;
   layout?: string;
-  options?: object;
+  options?: UnasignedObject;
 }
 export interface KRenderAppRenderOptions {
   page: string;
   layout?: string;
-  options?: object;
+  options?: UnasignedObject;
 }
 
 export interface KRenderErrorOptions {

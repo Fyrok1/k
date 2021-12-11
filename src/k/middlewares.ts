@@ -18,19 +18,13 @@ import cookieParser from 'cookie-parser';
 import fileUpload from 'express-fileupload';
 import './mailer';
 
-import { gitPull } from './updateGit';
-
 import './cron';
 import { Logger } from './logger';
 import { RenderMiddleware } from './render';
-import { DefaultRouter, MultilangRouter } from '../web/router';
-import {
-  ChangeLanguageMiddleware,
-  RedirectToMultilang,
-  supportedLanguges,
-} from './language';
+import { DefaultRouter } from '../web/router';
 import { HttpConfig } from '../web/http';
 import { KRenderMiddleware } from './kRender';
+import './language';
 
 if (process.env.NODE_ENV != 'production') app.disable('view cache');
 app.enable('trust proxy');
@@ -99,6 +93,9 @@ app.use(
 app.use(
   (req: express.Request, res: express.Response, next: express.NextFunction) => {
     res.set(HttpConfig.headers);
+    res.locals.t = (key): string => {
+      return req.i18n.t(key);
+    };
 
     req.session.ip = getIp(req);
     req.session.path = req.originalUrl;
@@ -111,19 +108,7 @@ app.use(
 // app.use(expressSitemapXml(() => getUrls(SiteRouter), `http://${process.env.HOST}/`))
 
 // ++Router
-if (process.env.NODE_ENV == 'production' && process.env.GITPULL == '1') {
-  app.post('/gitPull', gitPull);
-}
-
 app.use(DefaultRouter);
-if (process.env.MULTI_LANG == '1') {
-  supportedLanguges.forEach((lang) => {
-    app.use('/' + lang + '/', ChangeLanguageMiddleware(lang), MultilangRouter);
-  });
-  app.use(RedirectToMultilang());
-} else {
-  app.use(MultilangRouter);
-}
 
 app.use(async function (req, res: express.Response) {
   res.send404(req, res);
@@ -132,7 +117,9 @@ app.use(async function (req, res: express.Response) {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err, req, res, next) => {
   res.status(500);
-  Logger.error(err, { ip: req.session.ip ?? 'SYSTEM' });
+  Logger.error(err, {
+    ip: req.session && req.session.ip ? req.session.ip : 'SYSTEM',
+  });
   try {
     if (req.accepts('html')) {
       res.KRender.error({ error: err });

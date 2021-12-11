@@ -4,13 +4,28 @@
 <% if(env.NODE_ENV != 'production'){ %>
 <script>
   refreshCSS = () => {
+    
+    function setVersion(node){
+      const href = node.getAttribute('href').split('?')[0];
+      if(href.indexOf('?') !== -1){
+        node.setAttribute('href', href + '&v=' + new Date().getMilliseconds());
+      } else {
+        node.setAttribute('href', href + '?v=' + new Date().getMilliseconds());
+      }
+    }
+    
     const links = document.getElementsByTagName('link');
     for (let i = 0; i < links.length; i++) {
-      if (!links[i].hasAttribute('not-reload') && links[i].getAttribute('rel') == 'stylesheet' && links[i]
-        .getAttribute('href')) {
+      if ( links[i].getAttribute('rel') == 'stylesheet' && links[i].getAttribute('href')) {
         const href = links[i].getAttribute('href').split('?')[0];
-        const newHref = href + '?version=' + new Date().getMilliseconds();
-        links[i].setAttribute('href', newHref);
+        try{
+          let uri = new URL(href);
+          if(uri.origin == window.location.origin){
+            setVersion(links[i]);
+          }
+        }catch(e){
+          setVersion(links[i]);
+        }
       }
     }
   }

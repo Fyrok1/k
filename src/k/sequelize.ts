@@ -14,7 +14,7 @@ export const CheckSequelizeConnection = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) => {
+): void => {
   if (process.env.DB != '1' || sequelizeStatus.status) {
     next();
   } else {
