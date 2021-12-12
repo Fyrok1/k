@@ -27,10 +27,10 @@
 ## Installation 🎟
 
 ```
-k-cli start <app-name>
+k start <app-name>
 ```
 
-For more information [k-cli](https://github.com/Fyrok1/k-cli)
+For more information [k](https://github.com/Fyrok1/k)
 
 # Documantation
 
@@ -68,18 +68,18 @@ export const SiteRouter = router
   .get('/', SiteController.getIndex)
 ```
 
-**Create With k-cli**
+**Create With k**
 ```
-k-cli generate router <router-name>
+k generate router <router-name>
 ```
 
 ## Controllers
 
 Controllers will stored in `src/controllers` with .controller.ts extension
 
-**Create With k-cli**
+**Create With k**
 ```
-k-cli generate controller <router-name>
+k generate controller <router-name>
 ```
 
 **Example**
