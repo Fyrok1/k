@@ -151,8 +151,16 @@ export const RenderMiddleware = () => {
 
     const _send = res.send;
     res.send = async function (data) {
+      //* JSON.stringify required because if you don't stringify, it will try to parse the object and call res.send again which will cause an duplication of log
+      if (typeof data == 'object') {
+        try {
+          const _data = JSON.stringify(data);
+          data = _data;
+        } catch (error) {}
+      }
+
       if (data && !res.locals._rendered && !res.locals._sendFile) {
-        Logger.info(`SEND`, data);
+        Logger.info(`SEND ${req.originalUrl}`, data);
       }
       _send.call(this, data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
