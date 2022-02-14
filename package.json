@@ -5,12 +5,10 @@
   "main": "dist/server/k/index.js",
   "scripts": {
     "tsc": "tsc",
-    "build": "tsc && npm run scss-build",
-    "start": "tsc && npm run scss-build && NODE_ENV=production node dist/server/k/index.js",
-    "serve": "concurrently 'npm:scss' 'npm:node'",
+    "build": "tsc",
+    "start": "tsc && NODE_ENV=production node dist/server/k/index.js",
+    "serve": "concurrently 'npm:node'",
     "node": "NODE_ENV=development ts-node-dev --inspect=0.0.0.0:9300 --respawn --transpile-only ./src/k/index.ts",
-    "scss": "node-sass-chokidar ./scss -o ./public/assets/css --watch -r --output-style compressed",
-    "scss-build": "node-sass-chokidar ./scss -o ./public/assets/css -r --output-style compressed",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "docker:build": "docker build . -t k-node-web-app",
@@ -99,9 +97,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-prettier": "^4.0.0",
-    "gulp-sass": "^4.1.0",
-    "node-sass": "^5.0.0",
-    "node-sass-chokidar": "^1.5.0",
     "prettier": "^2.5.1",
     "ts-node-dev": "^1.1.1"
   }

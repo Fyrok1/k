@@ -17,7 +17,7 @@ import chokidar from 'chokidar';
 import './middlewares';
 import i18next from 'i18next';
 import { supportedLanguges } from './language';
-import { createRequiredFolders } from './functions';
+import { createRequiredFolders, deleteFolderRecursive } from './functions';
 import { CheckCustomErrors } from './kRender';
 import { Logger } from './logger';
 
@@ -28,6 +28,8 @@ httpServer.listen(process.env.PORT, () => {
 });
 
 if (process.env.NODE_ENV != 'production') {
+  deleteFolderRecursive(path.join(path.resolve(), '/public/assets/css'));
+  createRequiredFolders([path.join(path.resolve(), '/public/assets/css')]);
   let cooldown = 0;
   setInterval(() => {
     if (cooldown > 0) {
@@ -37,18 +39,19 @@ if (process.env.NODE_ENV != 'production') {
 
   chokidar
     .watch(path.join(path.resolve(), '/public'))
-    .on('all', (event, path) => {
+    .on('all', (event, filepath) => {
       if (cooldown == 0) {
         cooldown = 2;
-        if (path.endsWith('.css')) {
-          console.log(`CSS UPDATE ${path}`);
+        if (filepath.endsWith('.css')) {
+          console.log(`CSS UPDATE ${filepath.replace(path.resolve(), '')}`);
           Socket.emit('refresh-css');
-        } else {
-          console.log(`PUBLIC UPDATE ${path}`);
+        } else if (path.extname(filepath)) {
+          console.log(`PUBLIC UPDATE ${filepath.replace(path.resolve(), '')}`);
           Socket.emit('refresh-page');
         }
       }
     });
+
   chokidar
     .watch(path.join(path.resolve(), '/src'))
     .on('all', async (event, path) => {
@@ -63,11 +66,11 @@ if (process.env.NODE_ENV != 'production') {
   if (process.env.MULTI_LANG == '1') {
     chokidar
       .watch(path.join(path.resolve(), '/locales'))
-      .on('all', async (event, path) => {
+      .on('change', async (filepath) => {
         i18next.reloadResources(supportedLanguges);
         if (cooldown == 0) {
           cooldown = 2;
-          console.log(`LOCALES UPDATE ${path}`);
+          console.log(`LOCALES UPDATE ${filepath.replace(path.resolve(), '')}`);
           Socket.emit('refresh-page');
         }
       });

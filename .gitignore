@@ -27,6 +27,6 @@ development.env
 
 .vscode
 dist/
-
+public/assets/css
 # uploads
 uploads/*.*

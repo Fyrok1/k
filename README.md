@@ -293,8 +293,8 @@ Session stored in `Redis`, `Database` or `Memory`
 
 There is two ENV file `.env` and `.env.dev`.
 
-`yarn run serve` -> `.env.dev`,
-`yarn start` -> `.env`
+`yarn run serve` -> `development.env`,
+`yarn start` -> `production.env`
 
 > if you want to change these settings or file names you can edit package.json scripts
 

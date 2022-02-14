@@ -1,5 +1,5 @@
 import app from './app';
-import { getIp } from './functions';
+import { getIp, scssMiddleware } from './functions';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import express from 'express';
@@ -55,6 +55,7 @@ app.use(bodyParser.raw({ limit: HttpConfig.requestSizeLimit + 'mb' }));
 app.use(helmet());
 app.use(hpp());
 app.use(express.static('./public'));
+app.use(scssMiddleware);
 app.use('/uploads', express.static('./uploads'));
 app.use(cookieParser(process.env.SECRET));
 app.use(cors());
